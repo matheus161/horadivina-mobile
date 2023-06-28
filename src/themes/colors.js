@@ -1,9 +1,10 @@
 const colors = {
   fontPrimary: "#fff",
   fontSecondary: "#a1a1a1",
-  fontTerciary: "#000",
+  fontThird: "#000",
   appPrimary: "#3d423c",
   statusBar: "#191719",
+  grey: "#808080",
   white: "#fff",
   black: "#000",
   error: "#d73a49",
