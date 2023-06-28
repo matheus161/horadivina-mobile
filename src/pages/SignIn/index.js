@@ -1,16 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 
 import colors from "../../themes/colors";
 import * as Animatable from "react-native-animatable";
 
+import { useNavigation } from "@react-navigation/native";
+import login from "../../services/loginService";
+
 export default function SignIn() {
+  const navigation = useNavigation();
+
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [isLoading, setLoading] = useState(false);
+
+  const entrar = async () => {
+    let data = {
+      email: email,
+      password: password,
+    };
+
+    try {
+      setLoading(true);
+      await login(data);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Main" }],
+      });
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Email ou senha incorretos, tente novamente!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Animatable.View
@@ -23,14 +55,28 @@ export default function SignIn() {
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
         <Text style={styles.title}>Email</Text>
-        <TextInput placeholder="Digite um email" style={styles.input} />
+        <TextInput
+          placeholder="Digite um email"
+          onChangeText={(value) => setEmail(value)}
+          style={styles.input}
+        />
 
         <Text style={styles.title}>Senha</Text>
-        <TextInput placeholder="Sua senha" style={styles.input} />
+        <TextInput
+          placeholder="Sua senha"
+          onChangeText={(value) => setPassword(value)}
+          secureTextEntry={true}
+          style={styles.input}
+        />
 
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Acessar</Text>
-        </TouchableOpacity>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={() => entrar()}>
+            <Text style={styles.buttonText}>Acessar</Text>
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity style={styles.buttonRegister}>
           <Text style={styles.registerText}>
             Não possui uma conta? Cadastre-se
@@ -96,6 +142,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   registerText: {
-    color: "#a1a1a1",
+    color: colors.fontSecondary,
   },
 });

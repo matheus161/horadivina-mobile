@@ -1,6 +1,7 @@
 const colors = {
   fontPrimary: "#fff",
-  fontSecondary: "#000",
+  fontSecondary: "#a1a1a1",
+  fontTerciary: "#000",
   appPrimary: "#3d423c",
   statusBar: "#191719",
   white: "#fff",
