@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -15,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useForm, Controller } from "react-hook-form";
 import colors from "../../themes/colors";
+import register from "../../services/registerService";
 
 const schema = yup.object({
   name: yup
@@ -39,6 +41,13 @@ export default function Register() {
 
   const handleRegister = async (data) => {
     try {
+      setLoading(true);
+      await register(data);
+      Toast.show({
+        type: "success",
+        text1: "Bem-vindo(a)",
+        text2: "Conta criada com sucesso!",
+      });
       navigation.reset({
         index: 0,
         routes: [{ name: "SignIn" }],
