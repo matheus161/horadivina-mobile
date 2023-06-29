@@ -1,30 +1,31 @@
 import React, { useState } from "react";
 import {
-  Text,
   View,
+  Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
 } from "react-native";
-
-import colors from "../../themes/colors";
-import * as Animatable from "react-native-animatable";
 import Toast from "react-native-toast-message";
-import { yupResolver } from "@hookform/resolvers/yup";
+
+import * as Animatable from "react-native-animatable";
 import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigation } from "@react-navigation/native";
 
 import { useForm, Controller } from "react-hook-form";
-
-import { useNavigation } from "@react-navigation/native";
-import login from "../../services/loginService";
+import colors from "../../themes/colors";
 
 const schema = yup.object({
+  name: yup
+    .string()
+    .matches(/^[A-Za-zÁÉÍÓÚáéíóúãõÃÕâêôÂÊÔ ]+$/, "Nome Inválido")
+    .required("Informe seu nome"),
   email: yup.string().email("Email Inválido").required("Informe seu email"),
   password: yup.string().min(8, "Senha Inválida").required("Informe sua senha"),
 });
 
-export default function SignIn() {
+export default function Register() {
   const navigation = useNavigation();
   const [isLoading, setLoading] = useState(false);
 
@@ -36,20 +37,17 @@ export default function SignIn() {
     resolver: yupResolver(schema),
   });
 
-  const handleSignIn = async (data) => {
+  const handleRegister = async (data) => {
     try {
-      setLoading(true);
-      await login(data);
       navigation.reset({
         index: 0,
-        routes: [{ name: "Main" }],
+        routes: [{ name: "SignIn" }],
       });
     } catch (error) {
-      console.log(error);
       Toast.show({
         type: "error",
         text1: "Ops...",
-        text2: "Email ou senha incorretos, tente novamente!",
+        text2: "Algo deu errado, tente novamente!",
       });
     } finally {
       setLoading(false);
@@ -67,14 +65,31 @@ export default function SignIn() {
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
-        <Text style={styles.title}>Email</Text>
+        <Text style={styles.title}>Nome</Text>
+        <Controller
+          control={control}
+          name="name"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              placeholder="Digite seu nome"
+              style={styles.input}
+              onChangeText={onChange}
+              onBlur={onBlur} // chamado quando o é focado
+              value={value}
+            />
+          )}
+        />
+        {errors.name && (
+          <Text style={styles.labelError}>{errors.name?.message}</Text>
+        )}
 
+        <Text style={styles.title}>Email</Text>
         <Controller
           control={control}
           name="email"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              placeholder="Digite um email"
+              placeholder="Digite seu email"
               style={styles.input}
               onChangeText={onChange}
               onBlur={onBlur} // chamado quando o é focado
@@ -94,7 +109,7 @@ export default function SignIn() {
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               style={styles.input}
-              placeholder="Sua senha"
+              placeholder="Digite sua senha"
               onChangeText={onChange}
               onBlur={onBlur} // chamado quando o é focado
               value={value}
@@ -111,23 +126,11 @@ export default function SignIn() {
         ) : (
           <TouchableOpacity
             style={styles.button}
-            onPress={handleSubmit(handleSignIn)}
+            onPress={handleSubmit(handleRegister)}
           >
             <Text style={styles.buttonText}>Acessar</Text>
           </TouchableOpacity>
         )}
-
-        <TouchableOpacity
-          style={styles.buttonRegister}
-          onPress={() => navigation.navigate("Register")}
-        >
-          <Text style={styles.registerText}>
-            Não possui uma conta? Cadastre-se
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonRegister}>
-          <Text style={styles.registerText}>Esqueci minha senha</Text>
-        </TouchableOpacity>
       </Animatable.View>
     </View>
   );
