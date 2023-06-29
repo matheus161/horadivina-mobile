@@ -5,29 +5,38 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Alert,
   ActivityIndicator,
 } from "react-native";
 
 import colors from "../../themes/colors";
 import * as Animatable from "react-native-animatable";
+import Toast from "react-native-toast-message";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+import { useForm, Controller } from "react-hook-form";
 
 import { useNavigation } from "@react-navigation/native";
 import login from "../../services/loginService";
 
+const schema = yup.object({
+  email: yup.string().email("Email Inválido").required("Informe seu email"),
+  password: yup.string().min(8, "Senha Inválida").required("Informe sua senha"),
+});
+
 export default function SignIn() {
   const navigation = useNavigation();
-
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
   const [isLoading, setLoading] = useState(false);
 
-  const entrar = async () => {
-    let data = {
-      email: email,
-      password: password,
-    };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
+  const handleSignIn = async (data) => {
     try {
       setLoading(true);
       await login(data);
@@ -37,7 +46,11 @@ export default function SignIn() {
       });
     } catch (error) {
       console.log(error);
-      Alert.alert("Email ou senha incorretos, tente novamente!");
+      Toast.show({
+        type: "error",
+        text1: "Ops...",
+        text2: "Email ou senha incorretos, tente novamente!",
+      });
     } finally {
       setLoading(false);
     }
@@ -55,24 +68,51 @@ export default function SignIn() {
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
         <Text style={styles.title}>Email</Text>
-        <TextInput
-          placeholder="Digite um email"
-          onChangeText={(value) => setEmail(value)}
-          style={styles.input}
+
+        <Controller
+          control={control}
+          name="email"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              placeholder="Digite um email"
+              style={styles.input}
+              onChangeText={onChange}
+              onBlur={onBlur} // chamado quando o é focado
+              value={value}
+            />
+          )}
         />
+        {errors.email && (
+          <Text style={styles.labelError}>{errors.email?.message}</Text>
+        )}
 
         <Text style={styles.title}>Senha</Text>
-        <TextInput
-          placeholder="Sua senha"
-          onChangeText={(value) => setPassword(value)}
-          secureTextEntry={true}
-          style={styles.input}
+
+        <Controller
+          control={control}
+          name="password"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder="Sua senha"
+              onChangeText={onChange}
+              onBlur={onBlur} // chamado quando o é focado
+              value={value}
+              secureTextEntry={true}
+            />
+          )}
         />
+        {errors.password && (
+          <Text style={styles.labelError}>{errors.password?.message}</Text>
+        )}
 
         {isLoading ? (
           <ActivityIndicator />
         ) : (
-          <TouchableOpacity style={styles.button} onPress={() => entrar()}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSubmit(handleSignIn)}
+          >
             <Text style={styles.buttonText}>Acessar</Text>
           </TouchableOpacity>
         )}
@@ -143,5 +183,10 @@ const styles = StyleSheet.create({
   },
   registerText: {
     color: colors.fontSecondary,
+  },
+  labelError: {
+    alignSelf: "flex-start",
+    color: colors.error,
+    marginBottom: 8,
   },
 });
