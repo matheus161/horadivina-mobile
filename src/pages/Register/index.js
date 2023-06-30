@@ -140,6 +140,15 @@ export default function Register() {
             <Text style={styles.buttonText}>Acessar</Text>
           </TouchableOpacity>
         )}
+
+        <TouchableOpacity style={styles.buttonRegister}>
+          <Text
+            style={styles.registerText}
+            onPress={() => navigation.navigate("SignIn")}
+          >
+            Ja possui cadastro? Autentique-se agora
+          </Text>
+        </TouchableOpacity>
       </Animatable.View>
     </View>
   );
