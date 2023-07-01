@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 import religionService from "../../services/religionService";
+import filter from "lodash.filter";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 import * as Animatable from "react-native-animatable";
 import styles from "./styles";
@@ -17,15 +19,14 @@ import colors from "../../themes/colors";
 export default function Main() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
-  const [fullData, setFullData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const fetchData = async () => {
+  const fetchData = async (searchQuery) => {
     setIsLoading(true);
     try {
-      const data = await religionService.getAllReligions();
-      console.log(data);
+      const data = await religionService.getAllReligions(
+        searchQuery.toLowerCase()
+      );
       setData(data);
     } catch (error) {
       Toast.show({
@@ -39,12 +40,8 @@ export default function Main() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-  };
+    fetchData(searchQuery);
+  }, [searchQuery]);
 
   const handleShowReligion = ({ item }) => (
     <Animatable.View
@@ -82,7 +79,7 @@ export default function Main() {
             autoCapitalize="none"
             autoCorrect={false}
             value={searchQuery}
-            onChangeText={(query) => handleSearch(query)}
+            onChangeText={setSearchQuery}
           />
 
           {isLoading ? (
