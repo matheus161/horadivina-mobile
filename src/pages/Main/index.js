@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Text,
   View,
@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import religionService from "../../services/religionService";
-import filter from "lodash.filter";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 import * as Animatable from "react-native-animatable";
@@ -20,6 +19,8 @@ export default function Main() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const timeoutRef = useRef(null);
 
   const fetchData = async (searchQuery) => {
     setIsLoading(true);
@@ -39,8 +40,16 @@ export default function Main() {
     }
   };
 
+  const delayedSearch = (value) => {
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      fetchData(value);
+    }, 2000);
+  };
+
   useEffect(() => {
-    fetchData(searchQuery);
+    //fetchData(searchQuery);
+    delayedSearch(searchQuery);
   }, [searchQuery]);
 
   const handleShowReligion = ({ item }) => (
