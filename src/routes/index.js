@@ -61,7 +61,7 @@ function Tabs() {
 export default function Routes() {
   return (
     <Stack.Navigator>
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Welcome"
         component={Welcome}
         options={{ headerShown: false }}
@@ -77,7 +77,7 @@ export default function Routes() {
         name="Register"
         component={Register}
         options={{ headerShown: false }}
-      />
+      /> */}
 
       <Stack.Screen
         name="Main"

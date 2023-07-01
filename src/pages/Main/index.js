@@ -1,9 +1,31 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Keyboard } from "react-native";
 import * as Animatable from "react-native-animatable";
 import colors from "../../themes/colors";
+import SearchBar from "../../components/SearchBar/Index";
 
 export default function Main() {
+  const [keyboardShow, setKeyboardShow] = React.useState();
+  React.useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardShow(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardShow(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       <Animatable.View
@@ -14,10 +36,9 @@ export default function Main() {
         <Text style={styles.message}>Hora Divina</Text>
       </Animatable.View>
 
-      <Animatable.View
-        animation={"fadeInUp"}
-        style={styles.containerForm}
-      ></Animatable.View>
+      <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
+        <SearchBar />
+      </Animatable.View>
     </View>
   );
 }

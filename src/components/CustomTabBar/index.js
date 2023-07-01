@@ -1,76 +1,105 @@
+import React from "react";
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   Platform,
+  Keyboard,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import colors from "../../themes/colors";
 
+import * as Animatable from "react-native-animatable";
+
 export default function CustomTabBar({ state, descriptors, navigation }) {
+  const [keyboardShow, setKeyboardShow] = React.useState();
+  React.useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardShow(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardShow(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
+    !keyboardShow && (
+      <View style={styles.container}>
+        <Animatable.View
+          style={styles.content}
+          animation={"fadeInUp"}
+          delay={500}
+        >
+          {state.routes.map((route, index) => {
+            const { options } = descriptors[route.key];
 
-          const isFocused = state.index === index;
+            const isFocused = state.index === index;
 
-          const onPress = () => {
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-              canPreventDefault: true,
-            });
+            const onPress = () => {
+              const event = navigation.emit({
+                type: "tabPress",
+                target: route.key,
+                canPreventDefault: true,
+              });
 
-            if (!isFocused && !event.defaultPrevented) {
-              // The `merge: true` option makes sure that the params inside the tab screen are preserved
-              navigation.navigate({ name: route.name, merge: true });
-            }
-          };
+              if (!isFocused && !event.defaultPrevented) {
+                // The `merge: true` option makes sure that the params inside the tab screen are preserved
+                navigation.navigate({ name: route.name, merge: true });
+              }
+            };
 
-          const onLongPress = () => {
-            navigation.emit({
-              type: "tabLongPress",
-              target: route.key,
-            });
-          };
+            const onLongPress = () => {
+              navigation.emit({
+                type: "tabLongPress",
+                target: route.key,
+              });
+            };
 
-          return (
-            <TouchableOpacity
-              key={route.key}
-              accessibilityRole="button"
-              accessibilityState={isFocused ? { selected: true } : {}}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
-              onPress={onPress}
-              onLongPress={onLongPress}
-              style={styles.buttomTab}
-            >
-              <View style={{ alignItems: "center", padding: 4 }}>
-                <View
-                  style={[
-                    styles.innerButtom,
-                    {
-                      backgroundColor: isFocused
-                        ? colors.appThird
-                        : "transparent",
-                    },
-                  ]}
-                >
-                  <Ionicons
-                    name={options.tabBarIcon}
-                    size={34}
-                    color={isFocused ? colors.appFourthy : "#FFF"}
-                  />
+            return (
+              <TouchableOpacity
+                key={route.key}
+                accessibilityRole="button"
+                accessibilityState={isFocused ? { selected: true } : {}}
+                accessibilityLabel={options.tabBarAccessibilityLabel}
+                testID={options.tabBarTestID}
+                onPress={onPress}
+                onLongPress={onLongPress}
+                style={styles.buttomTab}
+              >
+                <View style={{ alignItems: "center", padding: 4 }}>
+                  <View
+                    style={[
+                      styles.innerButtom,
+                      {
+                        backgroundColor: isFocused
+                          ? colors.appThird
+                          : "transparent",
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      name={options.tabBarIcon}
+                      size={34}
+                      color={isFocused ? colors.appFourthy : "#FFF"}
+                    />
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+              </TouchableOpacity>
+            );
+          })}
+        </Animatable.View>
       </View>
-    </View>
+    )
   );
 }
 
