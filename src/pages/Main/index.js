@@ -44,7 +44,7 @@ export default function Main() {
     clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       fetchData(value);
-    }, 2000);
+    }, 500);
   };
 
   useEffect(() => {
