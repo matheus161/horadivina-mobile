@@ -1,74 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
-  StyleSheet,
   SafeAreaView,
   FlatList,
   Image,
+  TextInput,
+  ActivityIndicator,
 } from "react-native";
+import religionService from "../../services/religionService";
+
 import * as Animatable from "react-native-animatable";
+import styles from "./styles";
 import colors from "../../themes/colors";
-import SearchBar from "../../components/SearchBar";
 
 export default function Main() {
-  const religions = [
-    {
-      id: 1,
-      name: "Catolicismo",
-      image: require("../../assets/igreja-white.png"),
-    },
-    {
-      id: 2,
-      name: "Protestante",
-      image: require("../../assets/igreja-white.png"),
-    },
-    {
-      id: 3,
-      name: "Ubanda",
-      image: require("../../assets/igreja-white.png"),
-    },
-    {
-      id: 4,
-      name: "Exemplo",
-      image: require("../../assets/igreja-white.png"),
-    },
-    {
-      id: 5,
-      name: "Exemplo",
-      image: require("../../assets/igreja-white.png"),
-    },
-    {
-      id: 6,
-      name: "Exemplo",
-      image: require("../../assets/igreja-white.png"),
-    },
-    {
-      id: 7,
-      name: "Exemplo",
-      image: require("../../assets/igreja-white.png"),
-    },
-    {
-      id: 8,
-      name: "Exemplo",
-      image: require("../../assets/igreja-white.png"),
-    },
-    {
-      id: 9,
-      name: "Exemplo",
-      image: require("../../assets/igreja-white.png"),
-    },
-    {
-      id: 10,
-      name: "Exemplo",
-      image: require("../../assets/igreja-white.png"),
-    },
-    {
-      id: 11,
-      name: "Exemplo",
-      image: require("../../assets/igreja-white.png"),
-    },
-  ];
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
+  const [fullData, setFullData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const data = await religionService.getAllReligions();
+      console.log(data);
+      setData(data);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Ops...",
+        text2: "Erro ao carregar os dados, tente novamente!",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
 
   const handleShowReligion = ({ item }) => (
     <Animatable.View
@@ -77,7 +53,7 @@ export default function Main() {
       style={styles.itemContainer}
     >
       <View style={styles.avatarContainer}>
-        <Image source={item.image} style={styles.itemAvatar} />
+        <Image source={{ uri: item.avatar }} style={styles.itemAvatar} />
       </View>
       <Text style={styles.itemName}>{item.name}</Text>
     </Animatable.View>
@@ -98,75 +74,34 @@ export default function Main() {
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
-        <SearchBar />
-        <SafeAreaView>
-          <FlatList
-            data={religions}
-            renderItem={handleShowReligion}
-            ItemSeparatorComponent={itemSeparator}
-            showsVerticalScrollIndicator={false}
+        <SafeAreaView style={{ flex: 1 }}>
+          <TextInput
+            placeholder="Pesquisar"
+            clearButtonMode="always"
+            style={styles.searchBox}
+            autoCapitalize="none"
+            autoCorrect={false}
+            value={searchQuery}
+            onChangeText={(query) => handleSearch(query)}
           />
+
+          {isLoading ? (
+            <ActivityIndicator
+              size="large"
+              color={colors.appPrimary}
+              style={styles.activityIndicator}
+            />
+          ) : (
+            <FlatList
+              data={data}
+              renderItem={handleShowReligion}
+              ItemSeparatorComponent={itemSeparator}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: "40%" }}
+            />
+          )}
         </SafeAreaView>
       </Animatable.View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.appPrimary,
-  },
-  containerHeader: {
-    marginTop: "14%",
-    marginBottom: "8%",
-    marginStart: "5%",
-  },
-  message: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: colors.fontPrimary,
-  },
-  containerForm: {
-    backgroundColor: "#FFF",
-    flex: 1,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    paddingStart: "5%",
-    paddingEnd: "5%",
-    paddingBottom: "20%",
-    paddingTop: "0.5%",
-  },
-  title: {
-    fontSize: 20,
-    marginTop: 28,
-  },
-  separator: {
-    height: 1,
-    width: "100%",
-    backgroundColor: "#CCC",
-  },
-  itemContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 13,
-  },
-  avatarContainer: {
-    backgroundColor: colors.appPrimary,
-    borderRadius: 100,
-    height: 89,
-    width: 89,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  itemAvatar: {
-    height: 55,
-    width: 55,
-  },
-  itemName: {
-    fontWeight: "600",
-    fontSize: 16,
-    marginLeft: 13,
-  },
-});
