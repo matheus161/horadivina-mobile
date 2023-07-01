@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import colors from "../../themes/colors";
-import SearchBar from "../../components/SearchBar/Index";
+import SearchBar from "../../components/SearchBar";
 
 export default function Main() {
   const religions = [
@@ -98,6 +98,7 @@ export default function Main() {
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
+        <SearchBar />
         <SafeAreaView>
           <FlatList
             data={religions}
