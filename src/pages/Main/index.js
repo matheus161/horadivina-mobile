@@ -1,30 +1,87 @@
 import React from "react";
-import { Text, View, StyleSheet, Keyboard } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  Image,
+} from "react-native";
 import * as Animatable from "react-native-animatable";
 import colors from "../../themes/colors";
 import SearchBar from "../../components/SearchBar/Index";
 
 export default function Main() {
-  const [keyboardShow, setKeyboardShow] = React.useState();
-  React.useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardShow(true);
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardShow(false);
-      }
-    );
+  const religions = [
+    {
+      id: 1,
+      name: "Catolicismo",
+      image: require("../../assets/igreja-white.png"),
+    },
+    {
+      id: 2,
+      name: "Protestante",
+      image: require("../../assets/igreja-white.png"),
+    },
+    {
+      id: 3,
+      name: "Ubanda",
+      image: require("../../assets/igreja-white.png"),
+    },
+    {
+      id: 4,
+      name: "Exemplo",
+      image: require("../../assets/igreja-white.png"),
+    },
+    {
+      id: 5,
+      name: "Exemplo",
+      image: require("../../assets/igreja-white.png"),
+    },
+    {
+      id: 6,
+      name: "Exemplo",
+      image: require("../../assets/igreja-white.png"),
+    },
+    {
+      id: 7,
+      name: "Exemplo",
+      image: require("../../assets/igreja-white.png"),
+    },
+    {
+      id: 8,
+      name: "Exemplo",
+      image: require("../../assets/igreja-white.png"),
+    },
+    {
+      id: 9,
+      name: "Exemplo",
+      image: require("../../assets/igreja-white.png"),
+    },
+    {
+      id: 10,
+      name: "Exemplo",
+      image: require("../../assets/igreja-white.png"),
+    },
+    {
+      id: 11,
+      name: "Exemplo",
+      image: require("../../assets/igreja-white.png"),
+    },
+  ];
 
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
+  const handleShowReligion = ({ item }) => (
+    <View style={styles.itemContainer}>
+      <View style={styles.avatarContainer}>
+        <Image source={item.image} style={styles.itemAvatar} />
+      </View>
+      <Text style={styles.itemName}>{item.name}</Text>
+    </View>
+  );
+
+  itemSeparator = () => {
+    return <View style={styles.separator} />;
+  };
 
   return (
     <View style={styles.container}>
@@ -37,7 +94,14 @@ export default function Main() {
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
-        <SearchBar />
+        <SafeAreaView style={{ flex: 1, paddingBottom: 75 }}>
+          <FlatList
+            data={religions}
+            renderItem={handleShowReligion}
+            ItemSeparatorComponent={itemSeparator}
+            showsVerticalScrollIndicator={false}
+          />
+        </SafeAreaView>
       </Animatable.View>
     </View>
   );
@@ -70,36 +134,32 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 28,
   },
-  input: {
-    borderBottomWidth: 1,
-    height: 40,
-    marginBottom: 12,
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: colors.appPrimary,
+  separator: {
+    height: 1,
     width: "100%",
-    borderRadius: 4,
-    paddingVertical: 8,
-    marginTop: 14,
+    backgroundColor: "#CCC",
+  },
+  itemContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 13,
+  },
+  avatarContainer: {
+    backgroundColor: colors.appPrimary,
+    borderRadius: 100,
+    height: 89,
+    width: 89,
     justifyContent: "center",
     alignItems: "center",
   },
-  buttonText: {
-    color: colors.fontPrimary,
-    fontSize: 18,
-    fontWeight: "bold",
+  itemAvatar: {
+    height: 55,
+    width: 55,
   },
-  buttonRegister: {
-    marginTop: 14,
-    alignSelf: "center",
-  },
-  registerText: {
-    color: colors.fontSecondary,
-  },
-  labelError: {
-    alignSelf: "flex-start",
-    color: colors.error,
-    marginBottom: 8,
+  itemName: {
+    fontWeight: "600",
+    fontSize: 16,
+    marginLeft: 13,
   },
 });
