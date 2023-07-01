@@ -71,12 +71,16 @@ export default function Main() {
   ];
 
   const handleShowReligion = ({ item }) => (
-    <View style={styles.itemContainer}>
+    <Animatable.View
+      animation={"fadeIn"}
+      delay={500}
+      style={styles.itemContainer}
+    >
       <View style={styles.avatarContainer}>
         <Image source={item.image} style={styles.itemAvatar} />
       </View>
       <Text style={styles.itemName}>{item.name}</Text>
-    </View>
+    </Animatable.View>
   );
 
   itemSeparator = () => {
@@ -90,11 +94,11 @@ export default function Main() {
         delay={500}
         style={styles.containerHeader}
       >
-        <Text style={styles.message}>Hora Divina</Text>
+        <Text style={styles.message}>Religiões</Text>
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
-        <SafeAreaView style={{ flex: 1, paddingBottom: 75 }}>
+        <SafeAreaView>
           <FlatList
             data={religions}
             renderItem={handleShowReligion}
@@ -129,6 +133,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingStart: "5%",
     paddingEnd: "5%",
+    paddingBottom: "20%",
+    paddingTop: "0.5%",
   },
   title: {
     fontSize: 20,
