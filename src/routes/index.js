@@ -7,6 +7,7 @@ import Main from "../pages/Main";
 import Register from "../pages/Register";
 import Profile from "../pages/Profile";
 import Favorites from "../pages/Favorites";
+import InstitutionsList from "../pages/InstitutionsList";
 
 import CustomTabBar from "../components/CustomTabBar";
 
@@ -82,6 +83,12 @@ export default function Routes() {
       <Stack.Screen
         name="Main"
         component={Tabs}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="InsitutionsList"
+        component={InstitutionsList}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

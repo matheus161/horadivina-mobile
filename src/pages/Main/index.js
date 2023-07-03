@@ -7,15 +7,18 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
+  TouchableWithoutFeedback,
 } from "react-native";
 import religionService from "../../services/religionService";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { useNavigation } from "@react-navigation/native";
 
 import * as Animatable from "react-native-animatable";
 import styles from "./styles";
 import colors from "../../themes/colors";
 
 export default function Main() {
+  const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -52,17 +55,23 @@ export default function Main() {
     delayedSearch(searchQuery);
   }, [searchQuery]);
 
+  const navigateToPage = (item) => {
+    navigation.navigate("InsitutionsList", { item });
+  };
+
   const handleShowReligion = ({ item }) => (
-    <Animatable.View
-      animation={"fadeIn"}
-      delay={500}
-      style={styles.itemContainer}
-    >
-      <View style={styles.avatarContainer}>
-        <Image source={{ uri: item.avatar }} style={styles.itemAvatar} />
-      </View>
-      <Text style={styles.itemName}>{item.name}</Text>
-    </Animatable.View>
+    <TouchableWithoutFeedback onPress={() => navigateToPage(item)}>
+      <Animatable.View
+        animation={"fadeIn"}
+        delay={500}
+        style={styles.itemContainer}
+      >
+        <View style={styles.avatarContainer}>
+          <Image source={{ uri: item.avatar }} style={styles.itemAvatar} />
+        </View>
+        <Text style={styles.itemName}>{item.name}</Text>
+      </Animatable.View>
+    </TouchableWithoutFeedback>
   );
 
   itemSeparator = () => {
