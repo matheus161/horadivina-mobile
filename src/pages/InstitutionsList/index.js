@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import institutionsListService from "../../services/institutionsListService";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 import * as Animatable from "react-native-animatable";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -21,69 +23,44 @@ export default function InstitutionsList() {
   const route = useRoute();
   const { item } = route.params;
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchBar, setSearchBar] = useState(false);
 
-  const intituicoes = [
-    {
-      id: 1,
-      name: "Paróquia Nossa Senhora de Guadalupe",
-      avatar:
-        "https://drive.google.com/uc?export=view&id=1rIr0XERrdCj1-6Q5yPJALmZR_AlyMw9v",
-      local: "Paróquia de Estância",
-      cidade: "Estância - SE",
-      distancia: "2,0 km",
-      favorite: false,
-    },
-    {
-      id: 2,
-      name: "Igreja Nossa Senhora do Rosário",
-      avatar:
-        "https://drive.google.com/uc?export=view&id=1rIr0XERrdCj1-6Q5yPJALmZR_AlyMw9v",
-      local: "Paróquia de Estância",
-      cidade: "Estância - SE",
-      distancia: "400m",
-      favorite: false,
-    },
-    {
-      id: 3,
-      name: "Igreja Nossa Senhora de Fátima",
-      avatar:
-        "https://drive.google.com/uc?export=view&id=1rIr0XERrdCj1-6Q5yPJALmZR_AlyMw9v",
-      local: "Paróquia de Estância",
-      cidade: "Estância - SE",
-      distancia: "3,0 km",
-      favorite: true,
-    },
-    {
-      id: 4,
-      name: "Igreja Nossa Senhora de Fátima",
-      avatar:
-        "https://drive.google.com/uc?export=view&id=1rIr0XERrdCj1-6Q5yPJALmZR_AlyMw9v",
-      local: "Paróquia de Estância",
-      cidade: "Estância - SE",
-      distancia: "3,0 km",
-      favorite: true,
-    },
-    {
-      id: 5,
-      name: "Igreja Nossa Senhora de Fátima",
-      avatar:
-        "https://drive.google.com/uc?export=view&id=1rIr0XERrdCj1-6Q5yPJALmZR_AlyMw9v",
-      local: "Paróquia de Estância",
-      cidade: "Estância - SE",
-      distancia: "3,0 km",
-      favorite: false,
-    },
-    {
-      id: 6,
-      name: "Igreja Nossa Senhora de Fátima",
-      avatar:
-        "https://drive.google.com/uc?export=view&id=1rIr0XERrdCj1-6Q5yPJALmZR_AlyMw9v",
-      local: "Paróquia de Estância",
-      cidade: "Estância - SE",
-      distancia: "3,0 km",
-      favorite: false,
-    },
-  ];
+  const timeoutRef = useRef(null);
+
+  const fetchData = async (searchQuery, item) => {
+    setIsLoading(true);
+    try {
+      console.log(item._id);
+      const data = await institutionsListService.getAllInstitutions(
+        searchQuery.toLowerCase(),
+        item._id
+      );
+      setData(data);
+      data.totalitens > 0 ? setSearchBar(true) : setSearchBar(false);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Ops...",
+        text2: "Erro ao carregar os dados, tente novamente!",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const delayedSearch = (searchQuery, item) => {
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      fetchData(searchQuery, item);
+    }, 500);
+  };
+
+  useEffect(() => {
+    //fetchData(searchQuery, item);
+    delayedSearch(searchQuery, item);
+  }, [searchQuery]);
 
   const handleShowInstitutions = ({ item }) => (
     <View style={styles.buttonContainer}>
@@ -98,8 +75,10 @@ export default function InstitutionsList() {
           </View>
           <View style={styles.institutionContainer}>
             <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemLocal}>{item.name}</Text>
-            <Text style={styles.itemCity}>{item.cidade}</Text>
+            <Text style={styles.itemLocal}>{item.manager}</Text>
+            <Text style={styles.itemCity}>
+              {item.address.city} - {item.address.state}
+            </Text>
             <Text style={styles.itemDistance}>{item.distancia}</Text>
           </View>
         </Animatable.View>
@@ -116,6 +95,19 @@ export default function InstitutionsList() {
 
   const itemSeparator = () => {
     return <View style={styles.separator} />;
+  };
+
+  const emptyListMessage = () => {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={styles.noResultMesage}>
+          Sem resultados para esta localidade.
+        </Text>
+        <Image
+          source={require("../../assets/icons8-nada-foi-encontrado-100.png")}
+        />
+      </View>
+    );
   };
 
   return (
@@ -138,15 +130,17 @@ export default function InstitutionsList() {
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
         <SafeAreaView style={{ flex: 1 }}>
-          <TextInput
-            placeholder="Pesquisar"
-            clearButtonMode="always"
-            style={styles.searchBox}
-            autoCapitalize="none"
-            autoCorrect={false}
-            //value={searchQuery}
-            //onChangeText={setSearchQuery}
-          />
+          {searchBar && (
+            <TextInput
+              placeholder="Pesquisar"
+              clearButtonMode="always"
+              style={styles.searchBox}
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+          )}
 
           {isLoading ? (
             <ActivityIndicator
@@ -156,10 +150,11 @@ export default function InstitutionsList() {
             />
           ) : (
             <FlatList
-              data={intituicoes}
+              data={data.paginatedResults}
               renderItem={handleShowInstitutions}
               ItemSeparatorComponent={itemSeparator}
               showsVerticalScrollIndicator={false}
+              ListEmptyComponent={emptyListMessage}
               contentContainerStyle={{ paddingBottom: "5%" }}
             />
           )}
