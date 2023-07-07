@@ -18,6 +18,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./styles";
 import colors from "../../themes/colors";
 
+import * as Location from "expo-location";
+
 export default function InstitutionsList() {
   const navigation = useNavigation();
   const route = useRoute();
@@ -26,6 +28,7 @@ export default function InstitutionsList() {
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchBar, setSearchBar] = useState(false);
+  const [location, setLocation] = useState(null);
 
   const timeoutRef = useRef(null);
 
@@ -60,7 +63,29 @@ export default function InstitutionsList() {
   useEffect(() => {
     //fetchData(searchQuery, item);
     delayedSearch(searchQuery, item);
+    (async () => {
+      await Location.requestForegroundPermissionsAsync();
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
   }, [searchQuery]);
+
+  function handleLocation(item) {
+    if (location && location.coords) {
+      console.log(location);
+      const lat1 = JSON.stringify(location.coords.latitude);
+      const long1 = JSON.stringify(location.coords.longitude);
+      const lat2 = item.lat;
+      const long2 = item.long;
+      const distance =
+        Math.acos(
+          Math.sin(lat1) * Math.sin(lat2) +
+            Math.cos(lat1) * Math.cos(lat2) * Math.cos(long2 - long1)
+        ) * 6371;
+      return distance.toFixed(1);
+    }
+  }
 
   const handleShowInstitutions = ({ item }) => (
     <View style={styles.buttonContainer}>
@@ -79,7 +104,9 @@ export default function InstitutionsList() {
             <Text style={styles.itemCity}>
               {item.address.city} - {item.address.state}
             </Text>
-            <Text style={styles.itemDistance}>{item.distancia}</Text>
+            <Text style={styles.itemDistance}>
+              {handleLocation(item.address)} km
+            </Text>
           </View>
         </Animatable.View>
       </TouchableWithoutFeedback>
