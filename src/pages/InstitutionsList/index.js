@@ -30,23 +30,29 @@ export default function InstitutionsList() {
   const [location, setLocation] = useState(null);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
-  const [sort, setSort] = useState("0");
-  // const [lat, setLat] = useState("0");
 
   const timeoutRef = useRef(null);
 
-  const fetchData = async (searchQuery, item, page, limit, sort) => {
+  const fetchData = async (searchQuery, item, page, limit) => {
     setIsLoading(true);
     try {
+      let location = await AsyncStorage.getItem("USER_LOCATION");
+      setLocation(JSON.parse(location));
+
+      const coords = JSON.parse(location);
+      const lat = coords ? coords.latitude : null;
+      const lon = coords ? coords.longitude : null;
+
       const institutions = await institutionsListService.getAllInstitutions(
         searchQuery.toLowerCase(),
         item._id,
         page,
         limit,
-        sort
+        lat,
+        lon
       );
-
-      // Ordena os itens com base na distância
+      console.log(institutions);
+      //Ordena os itens com base na distância
       // institutions.paginatedResults.sort(
       //   (a, b) => handleLocation(a.address) - handleLocation(b.address)
       // );
@@ -65,10 +71,8 @@ export default function InstitutionsList() {
         }
       });
       setSearchBar(institutions.totalItens > 0);
-
-      let location = await AsyncStorage.getItem("USER_LOCATION");
-      setLocation(JSON.parse(location));
     } catch (error) {
+      console.log(error);
       Toast.show({
         type: "error",
         text1: "Ops...",
@@ -82,7 +86,7 @@ export default function InstitutionsList() {
   const delayedSearch = (searchQuery, item) => {
     clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      fetchData(searchQuery, item, page, limit, sort);
+      fetchData(searchQuery, item, page, limit);
     }, 500);
   };
 
@@ -93,24 +97,18 @@ export default function InstitutionsList() {
 
   function handleLocation(item) {
     if (location && location.coords) {
-      const lat1 = location.coords.latitude * (Math.PI / 180);
-      const long1 = location.coords.longitude * (Math.PI / 180);
-      const lat2 = item.lat * (Math.PI / 180);
-      const long2 = item.long * (Math.PI / 180);
+      const lat1 = parseFloat(location.coords.latitude) * (Math.PI / 180);
+      const long1 = parseFloat(location.coords.longitude) * (Math.PI / 180);
+      const lat2 = parseFloat(item.lat) * (Math.PI / 180);
+      const long2 = parseFloat(item.long) * (Math.PI / 180);
       const distance =
         Math.acos(
           Math.sin(lat1) * Math.sin(lat2) +
             Math.cos(lat1) * Math.cos(lat2) * Math.cos(long2 - long1)
         ) * 6371;
-      //return distance;
-      if (distance < 1) {
-        const distanceInMeters = distance * 1000;
-        return distanceInMeters.toFixed(0) + " m";
-      } else {
-        return distance.toFixed(1) + " km";
-      }
+      return distance;
     }
-    //return 0;
+    return 0;
   }
 
   const handleShowInstitutions = ({ item }) => (
@@ -131,7 +129,10 @@ export default function InstitutionsList() {
               {item.address.city} - {item.address.state}
             </Text>
             <Text style={styles.itemDistance}>
-              {handleLocation(item.address)}
+              {/* {item.distancia > 1000
+                ? (item.distancia / 1000).toFixed(2) + " Km"
+                : item.distancia} */}
+              {item.distancia}
             </Text>
           </View>
         </Animatable.View>

@@ -1,6 +1,6 @@
 import api from "../api/api";
 
-async function getAllInstitutions(searchQuery, id, page, limit, sort) {
+async function getAllInstitutions(searchQuery, id, page, limit, lat, lon) {
   try {
     const response = await api.get("/institutions", {
       params: {
@@ -8,7 +8,8 @@ async function getAllInstitutions(searchQuery, id, page, limit, sort) {
         religion: id,
         page: page,
         limit: limit,
-        sort: sort,
+        lat: lat,
+        lon: lon,
       },
     });
     return response.data;

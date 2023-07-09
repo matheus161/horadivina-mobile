@@ -43,7 +43,6 @@ export default function Main() {
         searchQuery.toLowerCase()
       );
       setData(data);
-      await Location.requestForegroundPermissionsAsync();
       await getUserLocation();
     } catch (error) {
       console.log(error);
