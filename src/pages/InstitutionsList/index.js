@@ -17,8 +17,7 @@ import * as Animatable from "react-native-animatable";
 import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./styles";
 import colors from "../../themes/colors";
-
-import * as Location from "expo-location";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function InstitutionsList() {
   const navigation = useNavigation();
@@ -42,6 +41,9 @@ export default function InstitutionsList() {
       );
       setData(data);
       data.totalitens > 0 ? setSearchBar(true) : setSearchBar(false);
+
+      let location = await AsyncStorage.getItem("USER_LOCATION");
+      setLocation(JSON.parse(location));
     } catch (error) {
       Toast.show({
         type: "error",
@@ -63,27 +65,27 @@ export default function InstitutionsList() {
   useEffect(() => {
     //fetchData(searchQuery, item);
     delayedSearch(searchQuery, item);
-    (async () => {
-      await Location.requestForegroundPermissionsAsync();
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
   }, [searchQuery]);
 
   function handleLocation(item) {
     if (location && location.coords) {
       console.log(location);
-      const lat1 = JSON.stringify(location.coords.latitude);
-      const long1 = JSON.stringify(location.coords.longitude);
-      const lat2 = item.lat;
-      const long2 = item.long;
+      const lat1 = location.coords.latitude * (Math.PI / 180);
+      const long1 = location.coords.longitude * (Math.PI / 180);
+      const lat2 = item.lat * (Math.PI / 180);
+      const long2 = item.long * (Math.PI / 180);
       const distance =
         Math.acos(
           Math.sin(lat1) * Math.sin(lat2) +
             Math.cos(lat1) * Math.cos(lat2) * Math.cos(long2 - long1)
         ) * 6371;
-      return distance.toFixed(1);
+
+      if (distance < 1) {
+        const distanceInMeters = distance * 1000;
+        return distanceInMeters.toFixed(0) + " m";
+      } else {
+        return distance.toFixed(1) + " km";
+      }
     }
   }
 
@@ -105,7 +107,7 @@ export default function InstitutionsList() {
               {item.address.city} - {item.address.state}
             </Text>
             <Text style={styles.itemDistance}>
-              {handleLocation(item.address)} km
+              {handleLocation(item.address)}
             </Text>
           </View>
         </Animatable.View>

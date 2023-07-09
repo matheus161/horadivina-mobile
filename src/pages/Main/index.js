@@ -17,13 +17,24 @@ import * as Animatable from "react-native-animatable";
 import styles from "./styles";
 import colors from "../../themes/colors";
 
+import * as Location from "expo-location";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function Main() {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [location, setLocation] = useState(null);
 
   const timeoutRef = useRef(null);
+
+  const getUserLocation = async () => {
+    await Location.requestForegroundPermissionsAsync();
+    let location = await Location.getCurrentPositionAsync({});
+    setLocation(location);
+    AsyncStorage.setItem("USER_LOCATION", JSON.stringify(location));
+  };
 
   const fetchData = async (searchQuery) => {
     setIsLoading(true);
@@ -32,6 +43,8 @@ export default function Main() {
         searchQuery.toLowerCase()
       );
       setData(data);
+      await Location.requestForegroundPermissionsAsync();
+      await getUserLocation();
     } catch (error) {
       Toast.show({
         type: "error",
