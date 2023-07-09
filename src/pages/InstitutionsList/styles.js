@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   noResultMesage: { color: colors.appPrimary, fontSize: 24 },
+  loading: { padding: 10 },
 });
 
 export default styles;

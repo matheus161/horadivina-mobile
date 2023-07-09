@@ -28,19 +28,43 @@ export default function InstitutionsList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchBar, setSearchBar] = useState(false);
   const [location, setLocation] = useState(null);
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(5);
+  const [sort, setSort] = useState("0");
+  // const [lat, setLat] = useState("0");
 
   const timeoutRef = useRef(null);
 
-  const fetchData = async (searchQuery, item) => {
+  const fetchData = async (searchQuery, item, page, limit, sort) => {
     setIsLoading(true);
     try {
-      console.log(item._id);
-      const data = await institutionsListService.getAllInstitutions(
+      const institutions = await institutionsListService.getAllInstitutions(
         searchQuery.toLowerCase(),
-        item._id
+        item._id,
+        page,
+        limit,
+        sort
       );
-      setData(data);
-      data.totalitens > 0 ? setSearchBar(true) : setSearchBar(false);
+
+      // Ordena os itens com base na distância
+      // institutions.paginatedResults.sort(
+      //   (a, b) => handleLocation(a.address) - handleLocation(b.address)
+      // );
+
+      setData((prevData) => {
+        if (page === 0) {
+          return institutions;
+        } else {
+          return {
+            ...prevData,
+            paginatedResults: [
+              ...prevData.paginatedResults,
+              ...institutions.paginatedResults,
+            ],
+          };
+        }
+      });
+      setSearchBar(institutions.totalItens > 0);
 
       let location = await AsyncStorage.getItem("USER_LOCATION");
       setLocation(JSON.parse(location));
@@ -58,18 +82,17 @@ export default function InstitutionsList() {
   const delayedSearch = (searchQuery, item) => {
     clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      fetchData(searchQuery, item);
+      fetchData(searchQuery, item, page, limit, sort);
     }, 500);
   };
 
   useEffect(() => {
     //fetchData(searchQuery, item);
     delayedSearch(searchQuery, item);
-  }, [searchQuery]);
+  }, [searchQuery, item, page]);
 
   function handleLocation(item) {
     if (location && location.coords) {
-      console.log(location);
       const lat1 = location.coords.latitude * (Math.PI / 180);
       const long1 = location.coords.longitude * (Math.PI / 180);
       const lat2 = item.lat * (Math.PI / 180);
@@ -79,7 +102,7 @@ export default function InstitutionsList() {
           Math.sin(lat1) * Math.sin(lat2) +
             Math.cos(lat1) * Math.cos(lat2) * Math.cos(long2 - long1)
         ) * 6371;
-
+      //return distance;
       if (distance < 1) {
         const distanceInMeters = distance * 1000;
         return distanceInMeters.toFixed(0) + " m";
@@ -87,6 +110,7 @@ export default function InstitutionsList() {
         return distance.toFixed(1) + " km";
       }
     }
+    //return 0;
   }
 
   const handleShowInstitutions = ({ item }) => (
@@ -139,6 +163,20 @@ export default function InstitutionsList() {
     );
   };
 
+  const loadMoreData = () => {
+    if (page + 1 < data.totalPages) setPage(page + 1);
+  };
+
+  function FooterList({ isLoading }) {
+    if (!isLoading) return null;
+
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size={25} color={colors.appPrimary} />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Animatable.View
@@ -167,11 +205,14 @@ export default function InstitutionsList() {
               autoCapitalize="none"
               autoCorrect={false}
               value={searchQuery}
-              onChangeText={setSearchQuery}
+              onChangeText={(text) => {
+                setSearchQuery(text);
+                setPage(0);
+              }}
             />
           )}
 
-          {isLoading ? (
+          {isLoading && page == 0 ? (
             <ActivityIndicator
               size="large"
               color={colors.appPrimary}
@@ -185,6 +226,9 @@ export default function InstitutionsList() {
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={emptyListMessage}
               contentContainerStyle={{ paddingBottom: "5%" }}
+              onEndReached={loadMoreData}
+              onEndReachedThreshold={0.1}
+              ListFooterComponent={<FooterList isLoading={isLoading} />}
             />
           )}
         </SafeAreaView>

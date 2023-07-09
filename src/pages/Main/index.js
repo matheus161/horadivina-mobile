@@ -46,6 +46,7 @@ export default function Main() {
       await Location.requestForegroundPermissionsAsync();
       await getUserLocation();
     } catch (error) {
+      console.log(error);
       Toast.show({
         type: "error",
         text1: "Ops...",
