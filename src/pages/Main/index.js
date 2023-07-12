@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -22,18 +22,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Main() {
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [location, setLocation] = useState(null);
 
-  const timeoutRef = useRef(null);
-
-  const getUserLocation = async () => {
-    await Location.requestForegroundPermissionsAsync();
-    let location = await Location.getCurrentPositionAsync({});
-    setLocation(location);
-    AsyncStorage.setItem("USER_LOCATION", JSON.stringify(location));
+  const setUserLocation = async () => {
+    setIsLoadingLocation(true);
+    try {
+      const userLocation = await Location.getCurrentPositionAsync({});
+      console.log("TELA MAIN", userLocation);
+      await AsyncStorage.setItem("USER_LOCATION", JSON.stringify(userLocation));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoadingLocation(false);
+    }
   };
 
   const fetchData = async (searchQuery) => {
@@ -43,7 +47,6 @@ export default function Main() {
         searchQuery.toLowerCase()
       );
       setData(data);
-      await getUserLocation();
     } catch (error) {
       console.log(error);
       Toast.show({
@@ -56,17 +59,13 @@ export default function Main() {
     }
   };
 
-  const delayedSearch = (value) => {
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      fetchData(value);
-    }, 500);
-  };
+  useEffect(() => {
+    fetchData(searchQuery);
+  }, [searchQuery]);
 
   useEffect(() => {
-    //fetchData(searchQuery);
-    delayedSearch(searchQuery);
-  }, [searchQuery]);
+    setUserLocation();
+  }, []);
 
   const navigateToPage = (item) => {
     navigation.navigate("InsitutionsList", { item });
@@ -113,7 +112,7 @@ export default function Main() {
             onChangeText={setSearchQuery}
           />
 
-          {isLoading ? (
+          {isLoading && isLoadingLocation ? (
             <ActivityIndicator
               size="large"
               color={colors.appPrimary}
