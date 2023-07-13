@@ -93,12 +93,10 @@ export default function InstitutionsList() {
 
   useEffect(() => {
     getUserLocation();
-    //fetchData("", 0);
   }, []);
 
   useEffect(() => {
     delayedSearch(searchQuery, page, location);
-    //fetchData(searchQuery, page, location);
   }, [searchQuery, page, location]);
 
   const handleShowInstitutions = ({ item }) => (
@@ -118,12 +116,7 @@ export default function InstitutionsList() {
             <Text style={styles.itemCity}>
               {item.address.city} - {item.address.state}
             </Text>
-            <Text style={styles.itemDistance}>
-              {/* {item.distancia > 1000
-                ? (item.distancia / 1000).toFixed(2) + " Km"
-                : item.distancia} */}
-              {item.distancia + " m"}
-            </Text>
+            <Text style={styles.itemDistance}>{item.distancia}</Text>
           </View>
         </Animatable.View>
       </TouchableWithoutFeedback>
