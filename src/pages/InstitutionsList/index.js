@@ -135,7 +135,7 @@ export default function InstitutionsList() {
   };
 
   const emptyListMessage = () => {
-    return (
+    return searchQuery === "" ? (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text style={styles.noResultMesage}>
           Sem resultados para esta localidade.
@@ -144,6 +144,35 @@ export default function InstitutionsList() {
           source={require("../../assets/icons8-nada-foi-encontrado-100.png")}
         />
       </View>
+    ) : (
+      <>
+        <TextInput
+          placeholder="Pesquisar"
+          clearButtonMode="always"
+          style={styles.searchBox}
+          autoCapitalize="none"
+          autoCorrect={false}
+          value={searchQuery}
+          onChangeText={(text) => {
+            setSearchQuery(text);
+          }}
+        />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: "20%",
+          }}
+        >
+          <Text style={styles.noResultMesage}>
+            Sem resultados dessa instituição em sua localidade.
+          </Text>
+          <Image
+            source={require("../../assets/icons8-nada-foi-encontrado-100.png")}
+          />
+        </View>
+      </>
     );
   };
 
