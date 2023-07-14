@@ -15,6 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import { useForm, Controller } from "react-hook-form";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useNavigation } from "@react-navigation/native";
 import login from "../../services/loginService";
@@ -39,7 +40,9 @@ export default function SignIn() {
   const handleSignIn = async (data) => {
     try {
       setLoading(true);
-      await login(data);
+      const response = await login(data);
+      await AsyncStorage.setItem("USER_ID", response.user._id);
+      await AsyncStorage.setItem("TOKEN", response.token);
       navigation.reset({
         index: 0,
         routes: [{ name: "Main" }],
@@ -79,6 +82,7 @@ export default function SignIn() {
               onChangeText={onChange}
               onBlur={onBlur} // chamado quando o é focado
               value={value}
+              autoCapitalize="none"
             />
           )}
         />

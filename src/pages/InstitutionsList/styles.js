@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {
     alignContent: "center",
-    justifyContent: "",
     paddingBottom: "1%",
   },
   searchBox: {
@@ -99,11 +98,17 @@ const styles = StyleSheet.create({
     marginLeft: 13,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end", // Opcional: alinha os botões na extremidade inferior
+    //flexDirection: "row",
+    //justifyContent: "space-between",
+    //alignItems: "flex-end", // Opcional: alinha os botões na extremidade inferior
     marginHorizontal: 10, // Opcional: adiciona margem horizontal para espaçar os botões da borda
     marginBottom: 10,
+  },
+  favoriteContainer: {
+    padding: "2%",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignContent: "space-around",
   },
   noResultMesage: { color: colors.appPrimary, fontSize: 24 },
   loading: { padding: 10 },

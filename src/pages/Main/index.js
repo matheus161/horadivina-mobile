@@ -31,7 +31,6 @@ export default function Main() {
     setIsLoadingLocation(true);
     try {
       const userLocation = await Location.getCurrentPositionAsync({});
-      console.log("TELA MAIN", userLocation);
       await AsyncStorage.setItem("USER_LOCATION", JSON.stringify(userLocation));
     } catch (error) {
       console.log(error);

@@ -26,10 +26,14 @@ export default function InstitutionsList() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [data, setData] = useState([]);
+  const [page, setPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchBar, setSearchBar] = useState(false);
   const [location, setLocation] = useState({});
-  const [page, setPage] = useState(0);
+  const [userId, setUserId] = useState("");
+  const [token, setToken] = useState("");
+  const [favoriteChanged, setFavoriteChanged] = useState(false);
+  const [subscribedChanged, setSubscribedChanged] = useState(false);
 
   const timeoutRef = useRef(null);
 
@@ -47,7 +51,14 @@ export default function InstitutionsList() {
     }
   };
 
-  const fetchData = async (searchQuery, page, location) => {
+  const getUser = async () => {
+    const userId = await AsyncStorage.getItem("USER_ID");
+    const token = await AsyncStorage.getItem("TOKEN");
+    setUserId(userId);
+    setToken(token);
+  };
+
+  const fetchData = async (searchQuery, page, location, userId) => {
     setIsLoading(true);
     try {
       const institutions = await institutionsListService.getAllInstitutions(
@@ -55,7 +66,8 @@ export default function InstitutionsList() {
         item._id,
         page,
         location.coords.latitude,
-        location.coords.longitude
+        location.coords.longitude,
+        userId
       );
 
       setData((prevData) => {
@@ -84,23 +96,89 @@ export default function InstitutionsList() {
     }
   };
 
-  const delayedSearch = (searchQuery, page, location) => {
+  const handleFavorite = async (item) => {
+    if (item.favorite) {
+      await institutionsListService.remFavorite(item._id, token);
+      Toast.show({
+        type: "info",
+        text1: "Instituição removida dos favoritos!",
+      });
+    } else {
+      await institutionsListService.addFavorite(item._id, token);
+      Toast.show({
+        type: "success",
+        text1: "Instituição adicionada aos favoritos!",
+      });
+    }
+
+    setFavoriteChanged(true);
+  };
+
+  const handleSubscribed = async (item) => {
+    if (item.subscribed) {
+      await institutionsListService.unsubscribe(item._id, token);
+      Toast.show({
+        type: "info",
+        text1: "Notificações desativadas com sucesso!",
+      });
+    } else {
+      await institutionsListService.subscribe(item._id, token);
+      Toast.show({
+        type: "success",
+        text1: "Notificações ativadas com sucesso!",
+      });
+    }
+
+    setSubscribedChanged(true);
+  };
+
+  const delayedSearch = (searchQuery, page, location, userId) => {
     clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      fetchData(searchQuery, page, location);
+      fetchData(searchQuery, page, location, userId);
     }, 500);
   };
 
   useEffect(() => {
     getUserLocation();
+    getUser();
   }, []);
 
   useEffect(() => {
-    delayedSearch(searchQuery, page, location);
-  }, [searchQuery, page, location]);
+    delayedSearch(searchQuery, page, location, userId);
+  }, [searchQuery, page, location, userId, favoriteChanged, subscribedChanged]);
+
+  // useEffect(() => {
+  //   if (favoriteChanged) {
+  //     //fetchData(searchQuery, page, location, userId);
+  //     setFavoriteChanged(false);
+  //   }
+  // }, [favoriteChanged]);
 
   const handleShowInstitutions = ({ item }) => (
     <View style={styles.buttonContainer}>
+      <View style={styles.favoriteContainer}>
+        <TouchableWithoutFeedback
+          onPress={() => handleFavorite(item)}
+          style={styles.favoriteButton}
+        >
+          <Icon
+            name={item.favorite ? "heart" : "heart-o"}
+            size={30}
+            color={item.favorite ? "red" : "black"}
+          />
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+          onPress={() => handleSubscribed(item)}
+          style={styles.favoriteButton}
+        >
+          {item.subscribed ? (
+            <Icon name="bell" size={30} />
+          ) : (
+            <Icon name="bell-o" size={30} />
+          )}
+        </TouchableWithoutFeedback>
+      </View>
       <TouchableWithoutFeedback>
         <Animatable.View
           animation={"fadeIn"}
@@ -119,13 +197,6 @@ export default function InstitutionsList() {
             <Text style={styles.itemDistance}>{item.distancia}</Text>
           </View>
         </Animatable.View>
-      </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback style={styles.favoriteButton}>
-        <Icon
-          name={item.favorite ? "heart" : "heart-o"}
-          size={20}
-          color={item.favorite ? "red" : "black"}
-        />
       </TouchableWithoutFeedback>
     </View>
   );
@@ -189,7 +260,7 @@ export default function InstitutionsList() {
       </View>
     );
   }
-
+  console.log("List Data", data.paginatedResults);
   return (
     <View style={styles.container}>
       <Animatable.View
@@ -242,6 +313,7 @@ export default function InstitutionsList() {
               onEndReached={loadMoreData}
               onEndReachedThreshold={0.1}
               ListFooterComponent={<FooterList isLoading={isLoading} />}
+              extraData={favoriteChanged}
             />
           )}
         </SafeAreaView>
