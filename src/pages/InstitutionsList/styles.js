@@ -49,12 +49,13 @@ const styles = StyleSheet.create({
   avatarContainer: {
     backgroundColor: colors.fontPrimary,
     borderRadius: 100,
-    height: 89,
-    width: 89,
+    height: 100,
+    width: 100,
     justifyContent: "center",
     alignItems: "center",
   },
   itemAvatar: {
+    borderRadius: 50,
     height: "100%",
     width: "100%",
   },
@@ -92,6 +93,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
   },
   institutionContainer: {
+    flex: 1,
     justifyContent: "center",
     alignContent: "center",
     marginLeft: 13,
@@ -103,6 +105,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10, // Opcional: adiciona margem horizontal para espaçar os botões da borda
     marginBottom: 10,
   },
+  noResultMesage: { color: colors.appPrimary, fontSize: 24 },
+  loading: { padding: 10 },
 });
 
 export default styles;

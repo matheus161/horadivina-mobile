@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -17,13 +17,28 @@ import * as Animatable from "react-native-animatable";
 import styles from "./styles";
 import colors from "../../themes/colors";
 
+import * as Location from "expo-location";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function Main() {
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const timeoutRef = useRef(null);
+  const setUserLocation = async () => {
+    setIsLoadingLocation(true);
+    try {
+      const userLocation = await Location.getCurrentPositionAsync({});
+      console.log("TELA MAIN", userLocation);
+      await AsyncStorage.setItem("USER_LOCATION", JSON.stringify(userLocation));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoadingLocation(false);
+    }
+  };
 
   const fetchData = async (searchQuery) => {
     setIsLoading(true);
@@ -33,6 +48,7 @@ export default function Main() {
       );
       setData(data);
     } catch (error) {
+      console.log(error);
       Toast.show({
         type: "error",
         text1: "Ops...",
@@ -43,17 +59,13 @@ export default function Main() {
     }
   };
 
-  const delayedSearch = (value) => {
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      fetchData(value);
-    }, 500);
-  };
+  useEffect(() => {
+    fetchData(searchQuery);
+  }, [searchQuery]);
 
   useEffect(() => {
-    //fetchData(searchQuery);
-    delayedSearch(searchQuery);
-  }, [searchQuery]);
+    setUserLocation();
+  }, []);
 
   const navigateToPage = (item) => {
     navigation.navigate("InsitutionsList", { item });
@@ -100,7 +112,7 @@ export default function Main() {
             onChangeText={setSearchQuery}
           />
 
-          {isLoading ? (
+          {isLoading && isLoadingLocation ? (
             <ActivityIndicator
               size="large"
               color={colors.appPrimary}
