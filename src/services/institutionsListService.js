@@ -13,7 +13,6 @@ async function getAllInstitutions(searchQuery, id, page, lat, lon, userId) {
         id: userId,
       },
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);
