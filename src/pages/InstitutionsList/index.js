@@ -19,6 +19,95 @@ import styles from "./styles";
 import colors from "../../themes/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const Institution = ({ item, token }) => {
+  const [isFavorite, setIsFavorite] = useState(item.favorite);
+  const [isSubscribed, setIsSubscribed] = useState(item.subscribed);
+
+  const handleFavorite = async () => {
+    if (isFavorite) {
+      await institutionsListService.remFavorite(item._id, token);
+      Toast.show({
+        type: "info",
+        text1: "Instituição removida dos favoritos!",
+      });
+      setIsFavorite(false);
+    } else {
+      await institutionsListService.addFavorite(item._id, token);
+      Toast.show({
+        type: "success",
+        text1: "Instituição adicionada aos favoritos!",
+      });
+      setIsFavorite(true);
+    }
+  };
+
+  const handleSubscribed = async () => {
+    if (isSubscribed) {
+      await institutionsListService.unsubscribe(item._id, token);
+      Toast.show({
+        type: "info",
+        text1: "Notificações desativadas com sucesso!",
+      });
+      setIsSubscribed(false);
+    } else {
+      await institutionsListService.subscribe(item._id, token);
+      Toast.show({
+        type: "success",
+        text1: "Notificações ativadas com sucesso!",
+      });
+      setIsSubscribed(true);
+    }
+  };
+
+  return (
+    <View style={styles.buttonContainer}>
+      <TouchableWithoutFeedback>
+        <Animatable.View
+          animation={"fadeIn"}
+          delay={500}
+          style={styles.itemContainer}
+        >
+          <View style={styles.avatarContainer}>
+            <Image source={{ uri: item.avatar }} style={styles.itemAvatar} />
+          </View>
+          <View style={styles.institutionContainer}>
+            <Text style={styles.itemName}>{item.name}</Text>
+            <Text style={styles.itemLocal}>{item.manager}</Text>
+            <Text style={styles.itemCity}>
+              {item.address.city} - {item.address.state}
+            </Text>
+            <Text style={styles.itemDistance}>{item.distancia}</Text>
+          </View>
+        </Animatable.View>
+      </TouchableWithoutFeedback>
+
+      <View style={styles.favoriteContainer}>
+        <TouchableWithoutFeedback
+          onPress={() => handleSubscribed(item)}
+          style={styles.favoriteButton}
+        >
+          {isSubscribed ? (
+            <Icon name="bell" size={30} />
+          ) : (
+            <Icon name="bell-o" size={30} />
+          )}
+        </TouchableWithoutFeedback>
+
+        <TouchableWithoutFeedback
+          onPress={() => handleFavorite(item)}
+          style={styles.favoriteButton}
+        >
+          <Icon
+            name={isFavorite ? "heart" : "heart-o"}
+            size={30}
+            color={isFavorite ? "red" : "black"}
+          />
+        </TouchableWithoutFeedback>
+      </View>
+    </View>
+  );
+};
+
 export default function InstitutionsList() {
   const navigation = useNavigation();
   const route = useRoute();
@@ -32,8 +121,6 @@ export default function InstitutionsList() {
   const [location, setLocation] = useState({});
   const [userId, setUserId] = useState("");
   const [token, setToken] = useState("");
-  const [favoriteChanged, setFavoriteChanged] = useState(false);
-  const [subscribedChanged, setSubscribedChanged] = useState(false);
 
   const timeoutRef = useRef(null);
 
@@ -42,7 +129,6 @@ export default function InstitutionsList() {
     try {
       const storedLocation = await AsyncStorage.getItem("USER_LOCATION");
       const parsedLocation = JSON.parse(storedLocation);
-      console.log(parsedLocation);
       setLocation(parsedLocation);
     } catch (error) {
       console.log(error);
@@ -96,42 +182,6 @@ export default function InstitutionsList() {
     }
   };
 
-  const handleFavorite = async (item) => {
-    if (item.favorite) {
-      await institutionsListService.remFavorite(item._id, token);
-      Toast.show({
-        type: "info",
-        text1: "Instituição removida dos favoritos!",
-      });
-    } else {
-      await institutionsListService.addFavorite(item._id, token);
-      Toast.show({
-        type: "success",
-        text1: "Instituição adicionada aos favoritos!",
-      });
-    }
-
-    setFavoriteChanged(true);
-  };
-
-  const handleSubscribed = async (item) => {
-    if (item.subscribed) {
-      await institutionsListService.unsubscribe(item._id, token);
-      Toast.show({
-        type: "info",
-        text1: "Notificações desativadas com sucesso!",
-      });
-    } else {
-      await institutionsListService.subscribe(item._id, token);
-      Toast.show({
-        type: "success",
-        text1: "Notificações ativadas com sucesso!",
-      });
-    }
-
-    setSubscribedChanged(true);
-  };
-
   const delayedSearch = (searchQuery, page, location, userId) => {
     clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
@@ -146,60 +196,7 @@ export default function InstitutionsList() {
 
   useEffect(() => {
     delayedSearch(searchQuery, page, location, userId);
-  }, [searchQuery, page, location, userId, favoriteChanged, subscribedChanged]);
-
-  // useEffect(() => {
-  //   if (favoriteChanged) {
-  //     //fetchData(searchQuery, page, location, userId);
-  //     setFavoriteChanged(false);
-  //   }
-  // }, [favoriteChanged]);
-
-  const handleShowInstitutions = ({ item }) => (
-    <View style={styles.buttonContainer}>
-      <View style={styles.favoriteContainer}>
-        <TouchableWithoutFeedback
-          onPress={() => handleFavorite(item)}
-          style={styles.favoriteButton}
-        >
-          <Icon
-            name={item.favorite ? "heart" : "heart-o"}
-            size={30}
-            color={item.favorite ? "red" : "black"}
-          />
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback
-          onPress={() => handleSubscribed(item)}
-          style={styles.favoriteButton}
-        >
-          {item.subscribed ? (
-            <Icon name="bell" size={30} />
-          ) : (
-            <Icon name="bell-o" size={30} />
-          )}
-        </TouchableWithoutFeedback>
-      </View>
-      <TouchableWithoutFeedback>
-        <Animatable.View
-          animation={"fadeIn"}
-          delay={500}
-          style={styles.itemContainer}
-        >
-          <View style={styles.avatarContainer}>
-            <Image source={{ uri: item.avatar }} style={styles.itemAvatar} />
-          </View>
-          <View style={styles.institutionContainer}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemLocal}>{item.manager}</Text>
-            <Text style={styles.itemCity}>
-              {item.address.city} - {item.address.state}
-            </Text>
-            <Text style={styles.itemDistance}>{item.distancia}</Text>
-          </View>
-        </Animatable.View>
-      </TouchableWithoutFeedback>
-    </View>
-  );
+  }, [searchQuery, page, location, userId]);
 
   const itemSeparator = () => {
     return <View style={styles.separator} />;
@@ -260,7 +257,7 @@ export default function InstitutionsList() {
       </View>
     );
   }
-  console.log("List Data", data.paginatedResults);
+
   return (
     <View style={styles.container}>
       <Animatable.View
@@ -305,7 +302,9 @@ export default function InstitutionsList() {
           ) : (
             <FlatList
               data={data.paginatedResults}
-              renderItem={handleShowInstitutions}
+              renderItem={({ item }) => (
+                <Institution item={item} token={token} />
+              )}
               ItemSeparatorComponent={itemSeparator}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={emptyListMessage}
@@ -313,7 +312,7 @@ export default function InstitutionsList() {
               onEndReached={loadMoreData}
               onEndReachedThreshold={0.1}
               ListFooterComponent={<FooterList isLoading={isLoading} />}
-              extraData={favoriteChanged}
+              //extraData={favoriteChanged}
             />
           )}
         </SafeAreaView>

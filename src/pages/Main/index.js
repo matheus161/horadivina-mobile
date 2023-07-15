@@ -30,6 +30,7 @@ export default function Main() {
   const setUserLocation = async () => {
     setIsLoadingLocation(true);
     try {
+      await Location.requestForegroundPermissionsAsync();
       const userLocation = await Location.getCurrentPositionAsync({});
       await AsyncStorage.setItem("USER_LOCATION", JSON.stringify(userLocation));
     } catch (error) {
