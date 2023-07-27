@@ -19,4 +19,29 @@ async function setUserLocation(token, latitude, longitude) {
   }
 }
 
-export default { setUserLocation };
+async function getFavoritedInstitutionsFilteredByReligion(
+  userId,
+  token,
+  searchQuery,
+  lat,
+  lon
+) {
+  try {
+    const response = await api.get(`/user/${userId}/favorite`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        name: searchQuery,
+        lat: lat,
+        lon: lon,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export default { setUserLocation, getFavoritedInstitutionsFilteredByReligion };
