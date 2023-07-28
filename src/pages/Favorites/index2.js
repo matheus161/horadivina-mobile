@@ -1,40 +1,130 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  View,
   Text,
+  View,
+  TextInput,
   SafeAreaView,
+  ActivityIndicator,
   FlatList,
   Image,
-  TextInput,
-  ActivityIndicator,
   TouchableWithoutFeedback,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import userService from "../../services/userService";
-import { Toast } from "react-native-toast-message/lib/src/Toast";
+import Toast from "react-native-toast-message/lib/src/Toast";
 
 import * as Animatable from "react-native-animatable";
-import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./styles";
 import colors from "../../themes/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import InsitutionsItem from "../../components/InstitutionItem";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-export default function InstitutionsList() {
+//import InsitutionsItem from "../../components/InstitutionItem";
+import institutionsListService from "../../services/institutionsListService";
+
+const InstitutionsItem = ({ item, token }) => {
+  //console.log("Institution Item", item.institution);
+  const [isFavorite, setIsFavorite] = useState(item.favorite);
+  const [isSubscribed, setIsSubscribed] = useState(item.subscribed);
+
+  const handleFavorite = async () => {
+    if (isFavorite) {
+      await institutionsListService.remFavorite(item._id, token);
+      Toast.show({
+        type: "info",
+        text1: "Instituição removida dos favoritos!",
+      });
+      setIsFavorite(false);
+    } else {
+      await institutionsListService.addFavorite(item._id, token);
+      Toast.show({
+        type: "success",
+        text1: "Instituição adicionada aos favoritos!",
+      });
+      setIsFavorite(true);
+    }
+  };
+
+  const handleSubscribed = async () => {
+    if (isSubscribed) {
+      await institutionsListService.unsubscribe(item._id, token);
+      Toast.show({
+        type: "info",
+        text1: "Notificações desativadas com sucesso!",
+      });
+      setIsSubscribed(false);
+    } else {
+      await institutionsListService.subscribe(item._id, token);
+      Toast.show({
+        type: "success",
+        text1: "Notificações ativadas com sucesso!",
+      });
+      setIsSubscribed(true);
+    }
+  };
+
+  return (
+    <View style={styles.buttonContainer}>
+      <TouchableWithoutFeedback>
+        <Animatable.View
+          animation={"fadeIn"}
+          delay={500}
+          style={styles.itemContainer}
+        >
+          <View style={styles.avatarContainer}>
+            <Image source={{ uri: item.avatar }} style={styles.itemAvatar} />
+          </View>
+          <View style={styles.institutionContainer}>
+            <Text style={styles.itemName}>{item.name}</Text>
+            <Text style={styles.itemLocal}>{item.manager}</Text>
+            <Text style={styles.itemCity}>
+              {item.city} - {item.state}
+            </Text>
+            <Text style={styles.itemDistance}>{item.distancia}</Text>
+          </View>
+        </Animatable.View>
+      </TouchableWithoutFeedback>
+
+      <View style={styles.favoriteContainer}>
+        <TouchableWithoutFeedback
+          onPress={() => handleSubscribed(item)}
+          style={styles.favoriteButton}
+        >
+          {isSubscribed ? (
+            <Icon name="bell" size={30} />
+          ) : (
+            <Icon name="bell-o" size={30} />
+          )}
+        </TouchableWithoutFeedback>
+
+        <TouchableWithoutFeedback
+          onPress={() => handleFavorite(item)}
+          style={styles.favoriteButton}
+        >
+          <Icon
+            name={isFavorite ? "heart" : "heart-o"}
+            size={30}
+            color={isFavorite ? "red" : "black"}
+          />
+        </TouchableWithoutFeedback>
+      </View>
+    </View>
+  );
+};
+
+export default function Favorites() {
   const navigation = useNavigation();
-  const route = useRoute();
+  const [searchBar, setSearchBar] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [data, setData] = useState([]);
-  const [page, setPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchBar, setSearchBar] = useState(false);
   const [location, setLocation] = useState({});
-  const [userId, setUserId] = useState("");
-  const [token, setToken] = useState("");
-
-  const timeoutRef = useRef(null);
+  const [userId, setUserId] = useState("64c2c5673fe8b9003308cf87");
+  const [token, setToken] = useState(
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzJjNTY3M2ZlOGI5MDAzMzA4Y2Y4NyIsImlhdCI6MTY5MDQ4NzM5NCwiZXhwIjoxNjk1NjcxMzk0fQ.DwacPSD_zP9sxYL3Vhi0plUAPnw7Z6HhTZZ5tYTW5I8"
+  );
 
   const getUserLocation = async () => {
     setIsLoadingLocation(true);
@@ -52,34 +142,25 @@ export default function InstitutionsList() {
   const getUser = async () => {
     const userId = await AsyncStorage.getItem("USER_ID");
     const token = await AsyncStorage.getItem("TOKEN");
+    console.log("USERID e TOKEN", userId, token);
     setUserId(userId);
     setToken(token);
   };
 
-  const fetchData = async (searchQuery, page, location, userId) => {
+  const fetchData = async (userId, searchQuery, location) => {
     setIsLoading(true);
     try {
-      const institutions = await userService.getAllFavorites(
+      const {
+        data: { institutions },
+      } = await userService.getFavoritedInstitutionsFilteredByReligion(
+        userId,
+        token,
         searchQuery.toLowerCase(),
-        page,
-        location.coords.latitude,
-        location.coords.longitude,
-        userId
+        "-11.275476858506398",
+        "-37.443791523029226"
       );
-
-      setData((prevData) => {
-        if (page === 0) {
-          return institutions;
-        } else {
-          return {
-            ...prevData,
-            paginatedResults: [
-              ...prevData.paginatedResults,
-              ...institutions.paginatedResults,
-            ],
-          };
-        }
-      });
+      console.log(institutions[0]);
+      setData(institutions);
       setSearchBar(institutions.totalItens > 0);
     } catch (error) {
       console.log(error);
@@ -93,21 +174,17 @@ export default function InstitutionsList() {
     }
   };
 
-  const delayedSearch = (searchQuery, page, location, userId) => {
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      fetchData(searchQuery, page, location, userId);
-    }, 500);
-  };
+  // useEffect(() => {
+  //   getUserLocation();
+  //   getUser();
+  // }, []);
 
   useEffect(() => {
-    getUserLocation();
-    getUser();
-  }, []);
-
-  useEffect(() => {
-    delayedSearch(searchQuery, page, location, userId);
-  }, [searchQuery, page, location, userId]);
+    // if (userId && location.coords && token) {
+    //   fetchData(userId, searchQuery, location);
+    // }
+    fetchData(userId, searchQuery, location);
+  }, [searchQuery, location, userId]);
 
   const itemSeparator = () => {
     return <View style={styles.separator} />;
@@ -155,10 +232,6 @@ export default function InstitutionsList() {
     );
   };
 
-  const loadMoreData = () => {
-    if (page + 1 < data.totalPages) setPage(page + 1);
-  };
-
   function FooterList({ isLoading }) {
     if (!isLoading) return null;
 
@@ -176,15 +249,7 @@ export default function InstitutionsList() {
         delay={500}
         style={styles.containerHeader}
       >
-        <TouchableWithoutFeedback
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Icon name="arrow-left" size={25} color={colors.fontPrimary} />
-        </TouchableWithoutFeedback>
-
-        <Text style={styles.message}>Meus Favoritos</Text>
+        <Text style={styles.message}>Favoritos</Text>
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
@@ -199,12 +264,12 @@ export default function InstitutionsList() {
               value={searchQuery}
               onChangeText={(text) => {
                 setSearchQuery(text);
-                setPage(0);
+                //setPage(0);
               }}
             />
           )}
 
-          {isLoading && isLoadingLocation && page == 0 ? (
+          {isLoading && isLoadingLocation ? (
             <ActivityIndicator
               size="large"
               color={colors.appPrimary}
@@ -212,22 +277,15 @@ export default function InstitutionsList() {
             />
           ) : (
             <FlatList
-              data={data.paginatedResults}
+              data={data}
               renderItem={({ item }) => (
-                <InsitutionsItem
-                  item={item}
-                  token={token}
-                  onChangeFavorite={() =>
-                    fetchData(searchQuery, page, location, userId)
-                  }
-                  isFavoriteScreen={true}
-                />
+                <InstitutionsItem item={item.institutions} token={token} />
               )}
               ItemSeparatorComponent={itemSeparator}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={emptyListMessage}
               contentContainerStyle={{ paddingBottom: "5%" }}
-              onEndReached={loadMoreData}
+              //onEndReached={loadMoreData}
               onEndReachedThreshold={0.1}
               ListFooterComponent={<FooterList isLoading={isLoading} />}
               //extraData={favoriteChanged}

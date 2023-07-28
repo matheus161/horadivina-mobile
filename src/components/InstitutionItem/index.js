@@ -7,7 +7,7 @@ import * as Animatable from "react-native-animatable";
 import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./styles";
 
-export default function Institution({ item, token }) {
+export default function Institution({ item, token, onChangeFavorite }) {
   const [isFavorite, setIsFavorite] = useState(item.favorite);
   const [isSubscribed, setIsSubscribed] = useState(item.subscribed);
 
@@ -19,6 +19,7 @@ export default function Institution({ item, token }) {
         text1: "Instituição removida dos favoritos!",
       });
       setIsFavorite(false);
+      await onChangeFavorite();
     } else {
       await institutionsListService.addFavorite(item._id, token);
       Toast.show({

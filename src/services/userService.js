@@ -1,47 +1,22 @@
 import api from "../api/api";
 
-async function setUserLocation(token, latitude, longitude) {
+async function getAllFavorites(searchQuery, page, lat, lon, userId) {
   try {
-    console.log(token);
-    const response = await api.put(
-      "/user/loc",
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.status;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-
-async function getFavoritedInstitutionsFilteredByReligion(
-  userId,
-  token,
-  searchQuery,
-  lat,
-  lon
-) {
-  try {
-    const response = await api.get(`/user/${userId}/favorite`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await api.get("/user", {
       params: {
         name: searchQuery,
+        page: page,
+        limit: 5,
         lat: lat,
         lon: lon,
+        id: userId,
       },
     });
-    return response;
+    return response.data;
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
 
-export default { setUserLocation, getFavoritedInstitutionsFilteredByReligion };
+export default { getAllFavorites };
