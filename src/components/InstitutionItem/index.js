@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, Image, TouchableWithoutFeedback } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+} from "react-native";
 import institutionsListService from "../../services/institutionsListService";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 
@@ -7,19 +13,30 @@ import * as Animatable from "react-native-animatable";
 import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./styles";
 
-export default function Institution({ item, token, onChangeFavorite }) {
+export default function Institution({
+  item,
+  token,
+  onChangeFavorite,
+  isFavoriteScreen,
+}) {
   const [isFavorite, setIsFavorite] = useState(item.favorite);
   const [isSubscribed, setIsSubscribed] = useState(item.subscribed);
 
   const handleFavorite = async () => {
     if (isFavorite) {
       await institutionsListService.remFavorite(item._id, token);
+      if (isSubscribed) {
+        await institutionsListService.unsubscribe(item._id, token);
+        setIsSubscribed(false);
+      }
       Toast.show({
         type: "info",
         text1: "Instituição removida dos favoritos!",
       });
       setIsFavorite(false);
-      await onChangeFavorite();
+      if (isFavoriteScreen) {
+        onChangeFavorite();
+      }
     } else {
       await institutionsListService.addFavorite(item._id, token);
       Toast.show({
@@ -40,6 +57,10 @@ export default function Institution({ item, token, onChangeFavorite }) {
       setIsSubscribed(false);
     } else {
       await institutionsListService.subscribe(item._id, token);
+      if (!isFavorite) {
+        await institutionsListService.addFavorite(item._id, token);
+        setIsFavorite(true);
+      }
       Toast.show({
         type: "success",
         text1: "Notificações ativadas com sucesso!",
@@ -47,6 +68,11 @@ export default function Institution({ item, token, onChangeFavorite }) {
       setIsSubscribed(true);
     }
   };
+
+  useEffect(() => {
+    setIsFavorite(item.favorite);
+    setIsSubscribed(item.subscribed);
+  }, [item]);
 
   return (
     <View style={styles.buttonContainer}>
@@ -71,7 +97,7 @@ export default function Institution({ item, token, onChangeFavorite }) {
       </TouchableWithoutFeedback>
 
       <View style={styles.favoriteContainer}>
-        <TouchableWithoutFeedback
+        <TouchableOpacity
           onPress={() => handleSubscribed(item)}
           style={styles.favoriteButton}
         >
@@ -80,9 +106,9 @@ export default function Institution({ item, token, onChangeFavorite }) {
           ) : (
             <Icon name="bell-o" size={30} />
           )}
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
 
-        <TouchableWithoutFeedback
+        <TouchableOpacity
           onPress={() => handleFavorite(item)}
           style={styles.favoriteButton}
         >
@@ -91,7 +117,7 @@ export default function Institution({ item, token, onChangeFavorite }) {
             size={30}
             color={isFavorite ? "red" : "black"}
           />
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
       </View>
     </View>
   );

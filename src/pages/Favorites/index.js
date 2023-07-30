@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import userService from "../../services/userService";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 
@@ -23,7 +23,7 @@ import InsitutionsItem from "../../components/InstitutionItem";
 
 export default function InstitutionsList() {
   const navigation = useNavigation();
-  const route = useRoute();
+  const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [data, setData] = useState([]);
@@ -106,8 +106,10 @@ export default function InstitutionsList() {
   }, []);
 
   useEffect(() => {
-    delayedSearch(searchQuery, page, location, userId);
-  }, [searchQuery, page, location, userId]);
+    if (isFocused) {
+      delayedSearch(searchQuery, page, location, userId);
+    }
+  }, [searchQuery, page, location, userId, isFocused]);
 
   const itemSeparator = () => {
     return <View style={styles.separator} />;
