@@ -7,7 +7,7 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import userService from "../../services/userService";
@@ -178,13 +178,13 @@ export default function InstitutionsList() {
         delay={500}
         style={styles.containerHeader}
       >
-        <TouchableWithoutFeedback
+        <TouchableOpacity
           onPress={() => {
             navigation.goBack();
           }}
         >
           <Icon name="arrow-left" size={25} color={colors.fontPrimary} />
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
 
         <Text style={styles.message}>Meus Favoritos</Text>
       </Animatable.View>
@@ -219,9 +219,9 @@ export default function InstitutionsList() {
                 <InsitutionsItem
                   item={item}
                   token={token}
-                  onChangeFavorite={() =>
-                    fetchData(searchQuery, page, location, userId)
-                  }
+                  onChangeFavorite={() => {
+                    setPage(0);
+                  }}
                   isFavoriteScreen={true}
                 />
               )}

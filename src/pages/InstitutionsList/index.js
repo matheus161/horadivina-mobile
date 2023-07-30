@@ -7,7 +7,7 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import institutionsListService from "../../services/institutionsListService";
@@ -178,13 +178,13 @@ export default function InstitutionsList() {
         delay={500}
         style={styles.containerHeader}
       >
-        <TouchableWithoutFeedback
+        <TouchableOpacity
           onPress={() => {
             navigation.goBack();
           }}
         >
           <Icon name="arrow-left" size={25} color={colors.fontPrimary} />
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
 
         <Text style={styles.message}>{item.name}</Text>
       </Animatable.View>
