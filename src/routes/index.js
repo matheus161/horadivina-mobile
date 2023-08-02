@@ -8,6 +8,7 @@ import Register from "../pages/Register";
 import Profile from "../pages/Profile";
 import Favorites from "../pages/Favorites";
 import InstitutionsList from "../pages/InstitutionsList";
+import InstitutionDetail from "../pages/InstitutionDetail";
 
 import CustomTabBar from "../components/CustomTabBar";
 
@@ -89,6 +90,12 @@ export default function Routes() {
       <Stack.Screen
         name="InsitutionsList"
         component={InstitutionsList}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="InstitutionDetail"
+        component={InstitutionDetail}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
