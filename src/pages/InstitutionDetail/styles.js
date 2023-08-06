@@ -14,6 +14,9 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     color: colors.fontPrimary,
+    textShadowColor: "rgba(0, 0, 0, 0.5)", // Cor da sombra em rgba (preto com 50% de opacidade)
+    textShadowOffset: { width: 1, height: 2 }, // Posição da sombra (horizontal e vertical)
+    textShadowRadius: 3, // Desfoque da sombra
   },
   containerForm: {
     backgroundColor: "#FFF",
@@ -22,6 +25,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingStart: "5%",
     paddingEnd: "5%",
+    paddingTop: "5%",
   },
   title: {
     fontSize: 20,
@@ -79,6 +83,9 @@ const styles = StyleSheet.create({
   iconStyle: {
     marginLeft: 10,
     marginRight: 10,
+    textShadowColor: "rgba(0, 0, 0, 0.8)", // Cor da sombra em rgba (preto com 80% de opacidade)
+    textShadowOffset: { width: 2, height: 4 }, // Posição da sombra (horizontal e vertical)
+    textShadowRadius: 6, // Desfoque da sombra
   },
 });
 

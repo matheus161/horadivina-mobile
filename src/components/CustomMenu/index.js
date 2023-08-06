@@ -1,43 +1,77 @@
-import React from "react";
-import { FlatList, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { FlatList, Text, View, TouchableOpacity } from "react-native";
 import styles from "./styles";
 
-export default function CustomMenu() {
-  const menuItems = [
-    {
-      index: 1,
-      name: "Informações",
-    },
-    {
-      index: 2,
-      name: "Missas",
-    },
-    {
-      index: 3,
-      name: "Notícias",
-    },
-    {
-      index: 4,
-      name: "Eventos",
-    },
-    {
-      index: 5,
-      name: "Doações",
-    },
-  ];
+import Info from "../Institution/Info";
+import Mass from "../Institution/Mass";
+import News from "../Institution/News";
+import Eventos from "../Institution/Eventos";
+import Donations from "../Institution/Donations";
 
-  const handleMenuItem = ({ item }) => (
-    <TouchableOpacity>
-      <Text style={styles.itemName}>{item.name}</Text>
-    </TouchableOpacity>
-  );
+const menuItems = [
+  {
+    index: "info",
+    name: "Informações",
+  },
+  {
+    index: "mass",
+    name: "Missas",
+  },
+  {
+    index: "news",
+    name: "Notícias",
+  },
+  {
+    index: "events",
+    name: "Eventos",
+  },
+  {
+    index: "donations",
+    name: "Doações",
+  },
+];
+
+export default function CustomMenu({ institution }) {
+  const [selectedItem, setSelectedItem] = useState("info");
+
+  const handleMenuItem = ({ item }) => {
+    const isSelected = selectedItem === item.index;
+
+    const handleButtonClick = () => {
+      setSelectedItem(item.index);
+    };
+
+    return (
+      <TouchableOpacity
+        style={[styles.button, isSelected && styles.selectedButton]}
+        onPress={handleButtonClick}
+      >
+        <Text style={[styles.itemName, isSelected && styles.selectedText]}>
+          {item.name}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
+  itemSeparator = () => {
+    return <View style={styles.separator} />;
+  };
 
   return (
-    <FlatList
-      data={menuItems}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      renderItem={handleMenuItem}
-    />
+    <View>
+      <FlatList
+        data={menuItems}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        ItemSeparatorComponent={itemSeparator}
+        renderItem={handleMenuItem}
+        keyExtractor={(item) => item.index.toString()}
+      />
+      {selectedItem === "info" && <Info institution={institution} />}
+      {selectedItem === "mass" && <Mass institution={institution} />}
+      {selectedItem === "news" && <News institution={institution} />}
+      {selectedItem === "events" && <Eventos institution={institution} />}
+      {selectedItem === "donations" && <Donations institution={institution} />}
+    </View>
   );
 }

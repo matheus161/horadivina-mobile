@@ -48,7 +48,9 @@ export default function InstitutionDetail() {
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
-        <CustomMenu />
+        <View>
+          <CustomMenu institution={item} />
+        </View>
       </Animatable.View>
     </View>
   );
