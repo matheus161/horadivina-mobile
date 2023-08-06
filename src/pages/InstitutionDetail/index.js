@@ -15,7 +15,6 @@ export default function InstitutionDetail() {
   const { item } = route.params;
   //const [isLoading, setIsLoading] = useState(false);
 
-  console.log(item.avatar);
   return (
     <View style={styles.container}>
       <Animatable.View

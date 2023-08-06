@@ -34,6 +34,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.grey,
   },
+  emptyMessage: {
+    fontWeight: "600",
+    fontSize: 24,
+  },
 });
 
 export default styles;
