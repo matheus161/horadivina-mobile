@@ -58,20 +58,26 @@ export default function CustomMenu({ institution }) {
   };
 
   return (
-    <View>
-      <FlatList
-        data={menuItems}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        ItemSeparatorComponent={itemSeparator}
-        renderItem={handleMenuItem}
-        keyExtractor={(item) => item.index.toString()}
-      />
-      {selectedItem === "info" && <Info institution={institution} />}
-      {selectedItem === "mass" && <Mass institution={institution} />}
-      {selectedItem === "news" && <News institution={institution} />}
-      {selectedItem === "events" && <Eventos institution={institution} />}
-      {selectedItem === "donations" && <Donations institution={institution} />}
-    </View>
+    <>
+      <View style={{ flex: 1 }}>
+        <FlatList
+          data={menuItems}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          ItemSeparatorComponent={itemSeparator}
+          renderItem={handleMenuItem}
+          keyExtractor={(item) => item.index.toString()}
+        />
+      </View>
+      <View style={{ flex: 12 }}>
+        {selectedItem === "info" && <Info institution={institution} />}
+        {selectedItem === "mass" && <Mass institution={institution} />}
+        {selectedItem === "news" && <News institution={institution} />}
+        {selectedItem === "events" && <Eventos institution={institution} />}
+        {selectedItem === "donations" && (
+          <Donations institution={institution} />
+        )}
+      </View>
+    </>
   );
 }

@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     flex: 1,
-    //backgroundColor: "red",
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 30,
@@ -26,6 +25,11 @@ const styles = StyleSheet.create({
   detail: {
     fontSize: 14,
     color: colors.grey,
+  },
+  separator: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "#CCC",
   },
 });
 

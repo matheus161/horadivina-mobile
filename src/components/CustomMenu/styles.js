@@ -9,15 +9,21 @@ const styles = StyleSheet.create({
   separator: {
     margin: 10,
   },
-  // selectedButton: {
-  //   backgroundColor: colors.appPrimary,
-  //   borderColor: "#007bff",
-  //   borderRadius: 5, // Valor pode ser ajustado conforme o desejado
-  //   padding: 3, // Valor pode ser ajustado conforme o desejado
-  // },
+  button: {
+    padding: 10,
+  },
+  selectedButton: {
+    backgroundColor: colors.appPrimary,
+    borderColor: "#007bff",
+    borderRadius: 50,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   selectedText: {
-    //color: colors.fontPrimary,
-    textDecorationLine: "underline",
+    color: colors.fontPrimary,
+    //textDecorationLine: "underline",
   },
 });
 

@@ -3,9 +3,10 @@ import colors from "../../../themes/colors";
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignContent: "center",
-    padding: 10,
-    marginBottom: "5%",
+    padding: "2%",
+    marginBottom: "25%",
   },
   separator: {
     height: 1,
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#CCC",
   },
   itemContainer: {
-    flex: 1,
+    //flex: 1,
     //backgroundColor: "red",
     flexDirection: "row",
     alignItems: "center",

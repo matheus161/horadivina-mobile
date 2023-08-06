@@ -7,22 +7,25 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function ItemDetail({ text1, text2, text3, icon }) {
   return (
-    <View style={styles.itemContainer}>
-      <View>
-        <TouchableOpacity>
-          <Icon name={icon} size={30} />
-        </TouchableOpacity>
+    <>
+      <View style={styles.itemContainer}>
+        <View>
+          <TouchableOpacity>
+            <Icon name={icon} size={30} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.infoAddress}>
+          <Text style={styles.title}>{text1}</Text>
+          {text2 != null && text3 != null ? (
+            <Text style={styles.detail}>
+              {text2}, {text3}
+            </Text>
+          ) : (
+            <Text style={styles.detail}>{text2}</Text>
+          )}
+        </View>
       </View>
-      <View style={styles.infoAddress}>
-        <Text style={styles.title}>{text1}</Text>
-        {text2 != null && text3 != null ? (
-          <Text style={styles.detail}>
-            {text2}, {text3}
-          </Text>
-        ) : (
-          <Text style={styles.detail}>{text2}</Text>
-        )}
-      </View>
-    </View>
+      <View style={styles.separator} />
+    </>
   );
 }
