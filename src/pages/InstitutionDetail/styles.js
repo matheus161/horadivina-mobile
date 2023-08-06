@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.5)", // Cor da sombra em rgba (preto com 50% de opacidade)
     textShadowOffset: { width: 1, height: 2 }, // Posição da sombra (horizontal e vertical)
     textShadowRadius: 3, // Desfoque da sombra
+    paddingRight: "10%",
   },
   containerForm: {
     backgroundColor: "#FFF",
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     height: 225,
   },
   avatarContainer: {
-    position: "relative",
+    //position: "relative",
   },
   textOverlay: {
     flexDirection: "row",

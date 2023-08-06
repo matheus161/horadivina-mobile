@@ -5,12 +5,6 @@ const styles = StyleSheet.create({
   container: {
     alignContent: "center",
     padding: 10,
-    marginBottom: "5%",
-  },
-  separator: {
-    height: 1,
-    width: "100%",
-    backgroundColor: "#CCC",
   },
   itemContainer: {
     flex: 1,
@@ -25,11 +19,11 @@ const styles = StyleSheet.create({
     alignContent: "center",
     marginLeft: 13,
   },
-  itemName: {
+  title: {
     fontWeight: "600",
     fontSize: 16,
   },
-  itemLocal: {
+  detail: {
     fontSize: 14,
     color: colors.grey,
   },
