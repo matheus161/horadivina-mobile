@@ -15,7 +15,7 @@ const menuItems = [
   },
   {
     index: "mass",
-    name: "Missas",
+    name: "Horários",
   },
   {
     index: "news",

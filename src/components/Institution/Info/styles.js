@@ -4,7 +4,6 @@ import colors from "../../../themes/colors";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignContent: "center",
     padding: "2%",
     marginBottom: "25%",
   },

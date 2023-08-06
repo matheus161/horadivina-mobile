@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
   },
   selectedButton: {
     backgroundColor: colors.appPrimary,
-    borderColor: "#007bff",
     borderRadius: 50,
     paddingVertical: 10,
     paddingHorizontal: 12,

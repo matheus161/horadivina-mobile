@@ -2,23 +2,24 @@ import { StyleSheet } from "react-native";
 import colors from "../../../themes/colors";
 
 const styles = StyleSheet.create({
-  container: {
-    alignContent: "center",
-    padding: 10,
-  },
   itemContainer: {
     flex: 1,
-    flexDirection: "row",
     alignItems: "center",
+    flexDirection: "row",
     paddingVertical: 30,
+  },
+  iconContainer: {
+    marginRight: 13,
+    alignItems: "center",
   },
   infoAddress: {
     flex: 1,
-    justifyContent: "center",
-    alignContent: "center",
-    marginLeft: 13,
+    // marginLeft: 13,
+    // justifyContent: "center",
+    // alignContent: "center",
   },
   title: {
+    // flex: 1,
     fontWeight: "600",
     fontSize: 16,
   },

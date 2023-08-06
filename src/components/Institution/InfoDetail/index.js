@@ -9,11 +9,10 @@ export default function ItemDetail({ text1, text2, text3, icon }) {
   return (
     <>
       <View style={styles.itemContainer}>
-        <View>
-          <TouchableOpacity>
-            <Icon name={icon} size={30} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.iconContainer}>
+          <Icon name={icon} size={30} />
+        </TouchableOpacity>
+
         <View style={styles.infoAddress}>
           <Text style={styles.title}>{text1}</Text>
           {text2 != null && text3 != null ? (

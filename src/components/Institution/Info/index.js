@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
 
 import * as Animatable from "react-native-animatable";
 import styles from "./styles";
-import ItemDetail from "../ItemDetail";
+import ItemDetail from "../InfoDetail";
 
 export default function Info({ institution }) {
   return (
