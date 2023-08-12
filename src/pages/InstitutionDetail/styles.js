@@ -14,9 +14,9 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     color: colors.fontPrimary,
-    textShadowColor: "rgba(0, 0, 0, 0.5)", // Cor da sombra em rgba (preto com 50% de opacidade)
-    textShadowOffset: { width: 1, height: 2 }, // Posição da sombra (horizontal e vertical)
-    textShadowRadius: 3, // Desfoque da sombra
+    textShadowColor: "rgba(0, 0, 0, 0.5)",
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 3,
     paddingRight: "10%",
   },
   containerForm: {
@@ -66,10 +66,7 @@ const styles = StyleSheet.create({
   },
   itemAvatar: {
     width: "100%",
-    height: 225,
-  },
-  avatarContainer: {
-    //position: "relative",
+    height: 275,
   },
   textOverlay: {
     flexDirection: "row",
@@ -78,15 +75,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    //justifyContent: "center",
     alignItems: "center",
   },
   iconStyle: {
     marginLeft: 10,
     marginRight: 10,
-    textShadowColor: "rgba(0, 0, 0, 0.8)", // Cor da sombra em rgba (preto com 80% de opacidade)
-    textShadowOffset: { width: 2, height: 4 }, // Posição da sombra (horizontal e vertical)
-    textShadowRadius: 6, // Desfoque da sombra
+    textShadowColor: "rgba(0, 0, 0, 0.8)",
+    textShadowOffset: { width: 2, height: 4 },
+    textShadowRadius: 6,
   },
 });
 

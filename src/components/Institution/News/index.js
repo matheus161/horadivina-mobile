@@ -20,14 +20,20 @@ import { useNavigation } from "@react-navigation/native";
 export default function News({ institution }) {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [dataTotalItens, setDataTotalItens] = useState(0);
   const navigation = useNavigation();
+  const [page, setPage] = useState(0);
 
-  const fetchData = async () => {
+  const fetchData = async (page) => {
     setIsLoading(true);
     try {
-      const data = await newService.getAllNewsByInstitution(institution._id);
-      console.log(data.paginatedResults);
-      setData(data.paginatedResults);
+      const news = await newService.getAllNewsByInstitution(
+        institution._id,
+        page
+      );
+
+      setData((prevData) => [...prevData, ...news.paginatedResults]);
+      setDataTotalItens(news.totalitens);
     } catch (error) {
       console.log(error);
       Toast.show({
@@ -41,8 +47,8 @@ export default function News({ institution }) {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]);
 
   const navigateToPage = (item) => {
     navigation.navigate("NewsDetail", { item });
@@ -53,9 +59,7 @@ export default function News({ institution }) {
       style={styles.container}
       onPress={() => navigateToPage(item)}
     >
-      {/* <Image source={{ uri: item.image }} style={styles.image} /> */}
       <Image
-        //source={require("../../../assets/image.jpg")}
         source={{ uri: item.image }}
         style={styles.image}
         resizeMode="cover"
@@ -69,13 +73,24 @@ export default function News({ institution }) {
     </TouchableOpacity>
   );
 
-  itemSeparator = () => {
-    return <View style={styles.separator} />;
+  const loadMoreData = () => {
+    const totalPages = Math.ceil(dataTotalItens / 5);
+    if (page + 1 < totalPages) setPage(page + 1);
   };
+
+  function FooterList({ isLoading }) {
+    if (!isLoading) return null;
+
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size={25} color={colors.appPrimary} />
+      </View>
+    );
+  }
 
   return (
     <View>
-      {isLoading ? (
+      {isLoading && page == 0 ? (
         <ActivityIndicator
           size="large"
           color={colors.appPrimary}
@@ -85,9 +100,11 @@ export default function News({ institution }) {
         <FlatList
           data={data}
           renderItem={handleNews}
-          itemSeparator={itemSeparator}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: "20%" }}
+          onEndReached={loadMoreData}
+          onEndReachedThreshold={0.1}
+          ListFooterComponent={<FooterList isLoading={isLoading} />}
         />
       )}
     </View>

@@ -13,7 +13,6 @@ export default function InstitutionDetail() {
   const navigation = useNavigation();
   const route = useRoute();
   const { item } = route.params;
-  //const [isLoading, setIsLoading] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -22,12 +21,8 @@ export default function InstitutionDetail() {
         delay={500}
         style={styles.containerHeader}
       >
-        <View style={styles.avatarContainer}>
-          <Image
-            // source={require("../../assets/image.jpg")}
-            source={{ uri: item.avatar }}
-            style={styles.itemAvatar}
-          />
+        <View>
+          <Image source={{ uri: item.avatar }} style={styles.itemAvatar} />
           <View style={styles.textOverlay}>
             <TouchableOpacity
               onPress={() => {
