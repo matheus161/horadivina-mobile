@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: "10%",
     padding: "2%",
-    backgroundColor: "red",
     width: "100%",
     height: 275,
     borderRadius: 10,
@@ -27,14 +26,21 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   title: {
-    backgroundColor: "blue",
-    height: 30,
+    backgroundColor: `${colors.appPrimary}80`,
+    color: colors.fontPrimary,
+    alignItems: "center",
     justifyContent: "center",
+    padding: 10,
+    fontSize: 16,
+    textAlign: "center",
+    // fontWeight: "bold",
   },
   date: {
     backgroundColor: "white",
-    height: 30,
+    alignItems: "center",
     justifyContent: "center",
+    padding: 10,
+    textAlign: "center",
   },
   separator: {
     height: 1,

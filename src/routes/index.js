@@ -9,6 +9,7 @@ import Profile from "../pages/Profile";
 import Favorites from "../pages/Favorites";
 import InstitutionsList from "../pages/InstitutionsList";
 import InstitutionDetail from "../pages/InstitutionDetail";
+import NewsDetail from "../pages/NewsDetail";
 
 import CustomTabBar from "../components/CustomTabBar";
 
@@ -96,6 +97,12 @@ export default function Routes() {
       <Stack.Screen
         name="InstitutionDetail"
         component={InstitutionDetail}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="NewsDetail"
+        component={NewsDetail}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
