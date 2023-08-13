@@ -54,6 +54,15 @@ const styles = StyleSheet.create({
     right: 0,
     padding: 7,
   },
+  activityIndicator: {
+    flex: 1,
+    marginTop: "50¨%",
+  },
+  noResultMesage: {
+    color: colors.appPrimary,
+    fontSize: 24,
+  },
+  loading: { padding: 10 },
 });
 
 export default styles;
