@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
   },
   selectedText: {
     color: colors.fontPrimary,
-    //textDecorationLine: "underline",
   },
 });
 
