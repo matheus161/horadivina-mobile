@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import institutionsListService from "../../services/institutionsListService";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { useNavigation } from "@react-navigation/native";
 
 import * as Animatable from "react-native-animatable";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -21,6 +22,7 @@ export default function Institution({
 }) {
   const [isFavorite, setIsFavorite] = useState(item.favorite);
   const [isSubscribed, setIsSubscribed] = useState(item.subscribed);
+  const navigation = useNavigation();
 
   const handleFavorite = async () => {
     if (isFavorite) {
@@ -74,9 +76,13 @@ export default function Institution({
     setIsSubscribed(item.subscribed);
   }, [item]);
 
+  const navigateToPage = (item) => {
+    navigation.navigate("InstitutionDetail", { item });
+  };
+
   return (
     <View style={styles.buttonContainer}>
-      <TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={() => navigateToPage(item)}>
         <Animatable.View
           animation={"fadeIn"}
           delay={500}
