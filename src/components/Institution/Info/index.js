@@ -13,24 +13,35 @@ export default function Info({ institution }) {
         text2={institution.address.street}
         text3={institution.address.number}
         icon={"map-marker"}
+        separator
       />
       {institution.information.number && (
-        <ItemDetail text1={institution.information.number} icon={"cellphone"} />
+        <ItemDetail
+          text1={institution.information.number}
+          icon={"cellphone"}
+          separator
+        />
       )}
       {institution.information.whatsapp && (
         <ItemDetail
           text1={institution.information.whatsapp}
           icon={"whatsapp"}
+          separator
         />
       )}
       {institution.information.email && (
-        <ItemDetail text1={institution.information.email} icon={"email"} />
+        <ItemDetail
+          text1={institution.information.email}
+          icon={"email"}
+          separator
+        />
       )}
       {institution.information.instagram && (
         <ItemDetail
           text1={"Instagram"}
           text2={institution.information.instagram}
           icon={"instagram"}
+          separator
         />
       )}
       {institution.information.facebook && (
@@ -38,6 +49,7 @@ export default function Info({ institution }) {
           text1={"Facebook"}
           text2={institution.information.facebook}
           icon={"facebook"}
+          separator
         />
       )}
       {institution.information.website && (

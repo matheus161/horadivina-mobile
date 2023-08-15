@@ -2,36 +2,35 @@ import { StyleSheet } from "react-native";
 import colors from "../../../themes/colors";
 
 const styles = StyleSheet.create({
-  container: {
+  itemContainer: {
     flex: 1,
-    padding: "2%",
-    marginBottom: "25%",
+    alignItems: "center",
+    flexDirection: "row",
+    paddingVertical: 30,
+  },
+  iconContainer: {
+    marginRight: 13,
+    alignItems: "center",
+  },
+  infoAddress: {
+    flex: 1,
+    // marginLeft: 13,
+    // justifyContent: "center",
+    // alignContent: "center",
+  },
+  title: {
+    // flex: 1,
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  detail: {
+    fontSize: 14,
+    color: colors.grey,
   },
   separator: {
     height: 1,
     width: "100%",
     backgroundColor: "#CCC",
-  },
-  itemContainer: {
-    //flex: 1,
-    //backgroundColor: "red",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 30,
-  },
-  infoAddress: {
-    flex: 1,
-    justifyContent: "center",
-    alignContent: "center",
-    marginLeft: 13,
-  },
-  itemName: {
-    fontWeight: "600",
-    fontSize: 16,
-  },
-  itemLocal: {
-    fontSize: 14,
-    color: colors.grey,
   },
 });
 

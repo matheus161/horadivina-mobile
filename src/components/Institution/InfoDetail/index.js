@@ -5,7 +5,7 @@ import * as Animatable from "react-native-animatable";
 import styles from "./styles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function ItemDetail({ text1, text2, text3, icon }) {
+export default function ItemDetail({ text1, text2, text3, icon, separator }) {
   return (
     <>
       <View style={styles.itemContainer}>
@@ -24,7 +24,7 @@ export default function ItemDetail({ text1, text2, text3, icon }) {
           )}
         </View>
       </View>
-      <View style={styles.separator} />
+      {separator && <View style={styles.separator} />}
     </>
   );
 }
