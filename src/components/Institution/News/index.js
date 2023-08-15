@@ -7,7 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
-import newService from "../../../services/newService";
+import newService from "../../../services/newsService";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import moment from "moment";
 import "moment/locale/pt-br";
@@ -39,7 +39,7 @@ export default function News({ institution }) {
       Toast.show({
         type: "error",
         text1: "Ops...",
-        text2: "Erro ao carregar a notícias, tente novamente!",
+        text2: "Erro ao carregar as notícias, tente novamente!",
       });
     } finally {
       setIsLoading(false);
@@ -88,6 +88,24 @@ export default function News({ institution }) {
     );
   }
 
+  const emptyListMessage = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: "20%",
+        }}
+      >
+        <Text style={styles.noResultMesage}>Não há notícias cadastradas.</Text>
+        <Image
+          source={require("../../../assets/icons8-nada-foi-encontrado-100.png")}
+        />
+      </View>
+    );
+  };
+
   return (
     <View>
       {isLoading && page == 0 ? (
@@ -101,6 +119,7 @@ export default function News({ institution }) {
           data={data}
           renderItem={handleNews}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={emptyListMessage}
           contentContainerStyle={{ paddingBottom: "20%" }}
           onEndReached={loadMoreData}
           onEndReachedThreshold={0.1}
