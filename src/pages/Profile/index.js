@@ -1,10 +1,25 @@
-import react from "react";
-import { Text, View } from "react-native";
+import React from "react";
+import { Text, View, StyleSheet } from "react-native";
+import * as Animatable from "react-native-animatable";
 
-export default function Profile() {
+import styles from "./styles";
+import colors from "../../themes/colors";
+
+export default function Main() {
   return (
-    <View>
-      <Text>Profile</Text>
+    <View style={styles.container}>
+      <Animatable.View
+        animation={"fadeInLeft"}
+        delay={500}
+        style={styles.containerHeader}
+      >
+        <Text style={styles.message}>Olá</Text>
+      </Animatable.View>
+
+      <Animatable.View
+        animation={"fadeInUp"}
+        style={styles.containerForm}
+      ></Animatable.View>
     </View>
   );
 }
