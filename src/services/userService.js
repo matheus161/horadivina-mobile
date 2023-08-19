@@ -30,4 +30,25 @@ async function getUserById(id) {
   }
 }
 
-export default { getAllFavorites, getUserById };
+async function update(name, email, token) {
+  try {
+    const response = await api.put(
+      "/user",
+      {
+        name: name,
+        email: email,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export default { getAllFavorites, getUserById, update };

@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   ScrollView,
-  Button,
 } from "react-native";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import * as Animatable from "react-native-animatable";
@@ -21,33 +20,12 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingUserInfo, setIsLoadingUserInfo] = useState(false);
   const [data, setData] = useState([]);
-  const [userId, setUserId] = useState("");
-  const [token, setToken] = useState("");
-
-  const getUser = async () => {
-    setIsLoadingUserInfo(true);
-    try {
-      const userId = await AsyncStorage.getItem("USER_ID");
-      // const token = await AsyncStorage.getItem("TOKEN");
-      setUserId(userId);
-      // setToken(token);
-    } catch (error) {
-      console.log(error);
-      Toast.show({
-        type: "error",
-        text1: "Ops...",
-        text2: "Erro ao carregar os dados, tente novamente!",
-      });
-    } finally {
-      setIsLoadingUserInfo(false);
-    }
-  };
 
   const fetchData = async () => {
     setIsLoading(true);
     try {
+      const userId = await AsyncStorage.getItem("USER_ID");
       const user = await userService.getUserById(userId);
-      console.log(user);
       setData(user);
     } catch (error) {
       console.log(error);
@@ -62,7 +40,6 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    getUser();
     fetchData();
   }, []);
 
@@ -85,36 +62,48 @@ export default function Profile() {
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
-        <ScrollView
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-        >
-          <ButtonDetail
-            icon={"user-alt"}
-            text1={"Alterar nome"}
-            text2={"Altere as informações do usário"}
-            separator
+        {isLoading && isLoadingUserInfo ? (
+          <ActivityIndicator
+            size="large"
+            color={colors.appPrimary}
+            style={styles.activityIndicator}
           />
-          <ButtonDetail
-            icon={"mail-bulk"}
-            text1={"Alterar e-mail"}
-            text2={"Altere o email do usuário"}
-            separator
-          />
-          <ButtonDetail
-            icon={"lock"}
-            text1={"Alterar senha"}
-            text2={"Altere a senha do usuário"}
-            separator
-          />
-          <ButtonDetail
-            icon={"compass"}
-            text1={"Alterar dados de busca"}
-            text2={"Altere o radar para suas buscas"}
-            separator
-          />
-          <Button title="Apagar conta" />
-        </ScrollView>
+        ) : (
+          <ScrollView
+            style={styles.scrollView}
+            showsVerticalScrollIndicator={false}
+          >
+            <ButtonDetail
+              icon={"user-alt"}
+              text1={"Alterar nome"}
+              text2={"Altere as informações do usário"}
+              separator
+              page={"ChangeName"}
+              user={data}
+            />
+            <ButtonDetail
+              icon={"mail-bulk"}
+              text1={"Alterar e-mail"}
+              text2={"Altere o email do usuário"}
+              separator
+            />
+            <ButtonDetail
+              icon={"lock"}
+              text1={"Alterar senha"}
+              text2={"Altere a senha do usuário"}
+              separator
+            />
+            <ButtonDetail
+              icon={"compass"}
+              text1={"Alterar dados de busca"}
+              text2={"Altere o radar para suas buscas"}
+              separator
+            />
+            <TouchableOpacity style={styles.buttonDelete}>
+              <Text style={styles.textDelete}>Excluir conta</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        )}
       </Animatable.View>
     </View>
   );

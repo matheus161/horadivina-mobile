@@ -1,13 +1,31 @@
 import React from "react";
 import { Text, View, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import styles from "./styles";
 import Icon from "react-native-vector-icons/FontAwesome5";
 
-export default function ButtonDetail({ text1, text2, text3, icon, separator }) {
+export default function ButtonDetail({
+  text1,
+  text2,
+  text3,
+  icon,
+  separator,
+  page,
+  user,
+}) {
+  const navigation = useNavigation();
+
+  const navigateToPage = (page, user) => {
+    navigation.navigate(page, { user });
+  };
+
   return (
     <>
-      <TouchableOpacity style={styles.itemContainer}>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => navigateToPage(page, user)}
+      >
         <View style={styles.iconContainer}>
           <Icon name={icon} size={30} />
         </View>
