@@ -19,4 +19,15 @@ async function getAllFavorites(searchQuery, page, lat, lon, userId) {
   }
 }
 
-export default { getAllFavorites };
+async function getUserById(id) {
+  try {
+    console.log("ID", id);
+    const response = await api.get(`/user/${id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export default { getAllFavorites, getUserById };

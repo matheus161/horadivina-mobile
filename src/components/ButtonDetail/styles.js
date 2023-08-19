@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import colors from "../../../themes/colors";
+import colors from "../../themes/colors";
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -14,8 +14,12 @@ const styles = StyleSheet.create({
   },
   infoAddress: {
     flex: 1,
+    // marginLeft: 13,
+    // justifyContent: "center",
+    // alignContent: "center",
   },
   title: {
+    // flex: 1,
     fontWeight: "600",
     fontSize: 16,
   },
