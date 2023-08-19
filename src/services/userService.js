@@ -21,7 +21,6 @@ async function getAllFavorites(searchQuery, page, lat, lon, userId) {
 
 async function getUserById(id) {
   try {
-    console.log("ID", id);
     const response = await api.get(`/user/${id}`);
     return response.data;
   } catch (error) {
@@ -54,7 +53,7 @@ async function update(name, email, token) {
 async function changePass(password, newPassword, token) {
   try {
     const response = await api.put(
-      "user/change-pass",
+      "/user/change-pass",
       {
         password: password,
         newPassword: newPassword,
@@ -65,7 +64,6 @@ async function changePass(password, newPassword, token) {
         },
       }
     );
-    console.log(response);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -73,4 +71,45 @@ async function changePass(password, newPassword, token) {
   }
 }
 
-export default { getAllFavorites, getUserById, update, changePass };
+async function updateRatio(ratio, token) {
+  try {
+    const response = await api.put(
+      "/user/ratio",
+      {
+        ratio: ratio,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+async function remove(token) {
+  try {
+    const response = await api.delete("/user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export default {
+  getAllFavorites,
+  getUserById,
+  update,
+  changePass,
+  updateRatio,
+  remove,
+};

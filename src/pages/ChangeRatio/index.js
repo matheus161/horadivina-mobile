@@ -9,57 +9,32 @@ import {
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { useForm, Controller } from "react-hook-form";
-
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as Animatable from "react-native-animatable";
 
 import userService from "../../services/userService";
 
+import Slider from "@react-native-community/slider";
+
 import styles from "./styles";
 import colors from "../../themes/colors";
 
-const schema = yup.object({
-  name: yup
-    .string()
-    .matches(/^[A-Za-zÁÉÍÓÚáéíóúãõÃÕâêôÂÊÔ ]+$/, "Nome Inválido")
-    .required("Informe seu nome"),
-});
-
-export default function ChangeName() {
+export default function ChangeRatio() {
   const [isLoading, setLoading] = useState(false);
   const navigation = useNavigation();
   const route = useRoute();
   const { user } = route.params;
-  const [name, setName] = useState("");
   const [token, setToken] = useState("");
+  const [ratio, setRatio] = useState(user.ratio);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
-  const handleUpdateUser = async (data) => {
+  const handleUpdateUser = async () => {
     try {
-      if (user.name === name) {
-        Toast.show({
-          type: "error",
-          text1: "Erro",
-          text2: "O nome não pode ser igual ao nome atual.",
-        });
-        return;
-      }
       setLoading(true);
-      await userService.update(data.name, user.email, token);
+      await userService.updateRatio(ratio, token);
       Toast.show({
         type: "success",
-        text1: "Nome atualizado com sucesso!",
+        text1: "Distância máxima atualizada com sucesso!",
       });
       navigation.goBack();
     } catch (error) {
@@ -105,41 +80,35 @@ export default function ChangeName() {
         >
           <Icon name="arrow-left" size={25} color={colors.fontPrimary} />
         </TouchableOpacity>
-        <Text style={styles.message}>Olá, {user.name}</Text>
+        <Text style={styles.message}>Olá, {user.name}!</Text>
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
-        <Text style={styles.title}>Nome</Text>
-        <Controller
-          control={control}
-          name="name"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              placeholder="Digite seu nome"
-              style={styles.input}
-              onChangeText={(text) => {
-                onChange(text);
-                setName(text);
-              }}
-              onBlur={onBlur} // chamado quando o é focado
-              value={value}
-            />
-          )}
+        <View style={styles.ratioContainer}>
+          <Text style={styles.ratioText}>Distância Máxima</Text>
+          <Text style={styles.ratioText}>{ratio} km</Text>
+        </View>
+        <Slider
+          style={styles.slider}
+          minimumValue={1}
+          maximumValue={100}
+          minimumTrackTintColor={colors.appPrimary}
+          maximumTrackTintColor="#A9A9A9"
+          thumbTintColor={colors.appPrimary}
+          onValueChange={(value) => setRatio(value.toFixed(0))}
+          value={ratio}
+          tapToSeek
         />
-        {errors.name && (
-          <Text style={styles.labelError}>{errors.name?.message}</Text>
-        )}
-
-        {isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit(handleUpdateUser)}
-          >
-            <Text style={styles.buttonText}>Atualizar</Text>
-          </TouchableOpacity>
-        )}
+        <View style={styles.separator} />
+        <View style={{ margin: 10 }}>
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={handleUpdateUser}>
+              <Text style={styles.buttonText}>Atualizar</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </Animatable.View>
     </View>
   );

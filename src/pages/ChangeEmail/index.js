@@ -74,7 +74,8 @@ export default function ChangeEmail() {
         Toast.show({
           type: "error",
           text1: "Erro",
-          text2: "Os valores dos campos do email não coincidem.",
+          text2:
+            "Os valores dos campos do novo email e confirme novo email não coincidem.",
         });
         return;
       }
@@ -154,7 +155,7 @@ export default function ChangeEmail() {
           <Text style={styles.labelError}>{errors.actualEmail?.message}</Text>
         )}
 
-        <Text style={styles.title}>Email</Text>
+        <Text style={styles.title}>Novo Email</Text>
         <Controller
           control={control}
           name="email"
@@ -175,7 +176,7 @@ export default function ChangeEmail() {
           <Text style={styles.labelError}>{errors.email?.message}</Text>
         )}
 
-        <Text style={styles.title}>Email</Text>
+        <Text style={styles.title}>Confirme Novo Email</Text>
         <Controller
           control={control}
           name="confirmEmail"

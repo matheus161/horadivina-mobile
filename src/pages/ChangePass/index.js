@@ -59,7 +59,8 @@ export default function ChangePass() {
         Toast.show({
           type: "error",
           text1: "Erro",
-          text2: "Os valores dos campos da nova senha não coincidem.",
+          text2:
+            "Os valores dos campos da nova senha e confirme nova senha não coincidem.",
         });
         return;
       }
@@ -169,7 +170,7 @@ export default function ChangePass() {
           <Text style={styles.labelError}>{errors.newPassword?.message}</Text>
         )}
 
-        <Text style={styles.title}>Nova Senha</Text>
+        <Text style={styles.title}>Confirme Nova Senha</Text>
         <Controller
           control={control}
           name="confirmNewPassword"

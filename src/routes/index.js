@@ -13,6 +13,7 @@ import NewsDetail from "../pages/NewsDetail";
 import ChangeName from "../pages/ChangeName";
 import ChangeEmail from "../pages/ChangeEmail";
 import ChangePass from "../pages/ChangePass";
+import ChangeRatio from "../pages/ChangeRatio";
 
 import CustomTabBar from "../components/CustomTabBar";
 
@@ -124,6 +125,12 @@ export default function Routes() {
       <Stack.Screen
         name="ChangePass"
         component={ChangePass}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="ChangeRatio"
+        component={ChangeRatio}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
