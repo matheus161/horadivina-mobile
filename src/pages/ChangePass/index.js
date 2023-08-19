@@ -23,24 +23,27 @@ import styles from "./styles";
 import colors from "../../themes/colors";
 
 const schema = yup.object({
-  name: yup
+  password: yup.string().min(8, "Senha Inválida").required("Informe sua senha"),
+  newPassword: yup
     .string()
-    .matches(/^[A-Za-zÁÉÍÓÚáéíóúãõÃÕâêôÂÊÔ ]+$/, "Nome Inválido")
-    .required("Informe seu nome"),
-  confirmName: yup
+    .min(8, "Senha Inválida")
+    .required("Informe sua senha"),
+  confirmNewPassword: yup
     .string()
-    .matches(/^[A-Za-zÁÉÍÓÚáéíóúãõÃÕâêôÂÊÔ ]+$/, "Nome Inválido")
-    .required("Informe seu nome"),
+    .min(8, "Senha Inválida")
+    .required("Informe sua senha"),
 });
 
-export default function ChangeName() {
+export default function ChangePass() {
   const [isLoading, setLoading] = useState(false);
   const navigation = useNavigation();
   const route = useRoute();
   const { user } = route.params;
-  const [name, setName] = useState("");
-  const [confirmName, setConfirmName] = useState("");
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [token, setToken] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     control,
@@ -52,26 +55,34 @@ export default function ChangeName() {
 
   const handleUpdateUser = async (data) => {
     try {
-      if (name !== confirmName) {
+      if (newPassword !== confirmNewPassword) {
         Toast.show({
           type: "error",
           text1: "Erro",
-          text2: "Os valores dos campos de nome não coincidem.",
+          text2: "Os valores dos campos da nova senha não coincidem.",
+        });
+        return;
+      }
+      if (password === newPassword) {
+        Toast.show({
+          type: "error",
+          text1: "Erro",
+          text2: "A nova senha não pode ser igual a antiga.",
         });
         return;
       }
       setLoading(true);
-      await userService.update(data.name, user.email, token);
+      await userService.changePass(data.password, data.newPassword, token);
       Toast.show({
         type: "success",
-        text1: "Nome atualizado com sucesso!",
+        text1: "Senha atualizada com sucesso!",
       });
       navigation.goBack();
     } catch (error) {
       Toast.show({
         type: "error",
         text1: "Ops...",
-        text2: "Algo deu errado, tente novamente!",
+        text2: "A senha atual está incorreta",
       });
     } finally {
       setLoading(false);
@@ -114,46 +125,72 @@ export default function ChangeName() {
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
-        <Text style={styles.title}>Nome</Text>
+        <Text style={styles.title}>Senha</Text>
         <Controller
           control={control}
-          name="name"
+          name="password"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              placeholder="Digite seu nome"
               style={styles.input}
+              placeholder="Digite a senha atual"
               onChangeText={(text) => {
                 onChange(text);
-                setName(text);
+                setPassword(text);
               }}
               onBlur={onBlur} // chamado quando o é focado
               value={value}
+              secureTextEntry={true}
             />
           )}
         />
-        {errors.name && (
-          <Text style={styles.labelError}>{errors.name?.message}</Text>
+        {errors.password && (
+          <Text style={styles.labelError}>{errors.password?.message}</Text>
         )}
 
-        <Text style={styles.title}>Nome</Text>
+        <Text style={styles.title}>Nova Senha</Text>
         <Controller
           control={control}
-          name="confirmName"
+          name="newPassword"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              placeholder="Confirme seu nome"
               style={styles.input}
+              placeholder="Digite a nova senha"
               onChangeText={(text) => {
                 onChange(text);
-                setConfirmName(text);
+                setNewPassword(text);
               }}
               onBlur={onBlur} // chamado quando o é focado
               value={value}
+              secureTextEntry={true}
             />
           )}
         />
-        {errors.confirmName && (
-          <Text style={styles.labelError}>{errors.confirmName?.message}</Text>
+        {errors.newPassword && (
+          <Text style={styles.labelError}>{errors.newPassword?.message}</Text>
+        )}
+
+        <Text style={styles.title}>Nova Senha</Text>
+        <Controller
+          control={control}
+          name="confirmNewPassword"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder="Confirme a nova senha"
+              onChangeText={(text) => {
+                onChange(text);
+                setConfirmNewPassword(text);
+              }}
+              onBlur={onBlur} // chamado quando o é focado
+              value={value}
+              secureTextEntry={true}
+            />
+          )}
+        />
+        {errors.confirmNewPassword && (
+          <Text style={styles.labelError}>
+            {errors.confirmNewPassword?.message}
+          </Text>
         )}
 
         {isLoading ? (

@@ -51,4 +51,26 @@ async function update(name, email, token) {
   }
 }
 
-export default { getAllFavorites, getUserById, update };
+async function changePass(password, newPassword, token) {
+  try {
+    const response = await api.put(
+      "user/change-pass",
+      {
+        password: password,
+        newPassword: newPassword,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export default { getAllFavorites, getUserById, update, changePass };

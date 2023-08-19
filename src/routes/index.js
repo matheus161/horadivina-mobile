@@ -11,6 +11,8 @@ import InstitutionsList from "../pages/InstitutionsList";
 import InstitutionDetail from "../pages/InstitutionDetail";
 import NewsDetail from "../pages/NewsDetail";
 import ChangeName from "../pages/ChangeName";
+import ChangeEmail from "../pages/ChangeEmail";
+import ChangePass from "../pages/ChangePass";
 
 import CustomTabBar from "../components/CustomTabBar";
 
@@ -110,6 +112,18 @@ export default function Routes() {
       <Stack.Screen
         name="ChangeName"
         component={ChangeName}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="ChangeEmail"
+        component={ChangeEmail}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="ChangePass"
+        component={ChangePass}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

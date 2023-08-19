@@ -23,23 +23,25 @@ import styles from "./styles";
 import colors from "../../themes/colors";
 
 const schema = yup.object({
-  name: yup
+  actualEmail: yup
     .string()
-    .matches(/^[A-Za-zÁÉÍÓÚáéíóúãõÃÕâêôÂÊÔ ]+$/, "Nome Inválido")
-    .required("Informe seu nome"),
-  confirmName: yup
+    .email("Email Inválido")
+    .required("Informe seu email"),
+  email: yup.string().email("Email Inválido").required("Informe seu email"),
+  confirmEmail: yup
     .string()
-    .matches(/^[A-Za-zÁÉÍÓÚáéíóúãõÃÕâêôÂÊÔ ]+$/, "Nome Inválido")
-    .required("Informe seu nome"),
+    .email("Email Inválido")
+    .required("Informe seu email"),
 });
 
-export default function ChangeName() {
+export default function ChangeEmail() {
   const [isLoading, setLoading] = useState(false);
   const navigation = useNavigation();
   const route = useRoute();
   const { user } = route.params;
-  const [name, setName] = useState("");
-  const [confirmName, setConfirmName] = useState("");
+  const [actualEmail, setActualEmail] = useState("");
+  const [email, setEmail] = useState("");
+  const [confirmEmail, setConfirmEmail] = useState("");
   const [token, setToken] = useState("");
 
   const {
@@ -52,22 +54,39 @@ export default function ChangeName() {
 
   const handleUpdateUser = async (data) => {
     try {
-      if (name !== confirmName) {
+      if (actualEmail !== user.email) {
         Toast.show({
           type: "error",
           text1: "Erro",
-          text2: "Os valores dos campos de nome não coincidem.",
+          text2: "O email atual está incorreto.",
+        });
+        return;
+      }
+      if (actualEmail === email && actualEmail === confirmEmail) {
+        Toast.show({
+          type: "error",
+          text1: "Erro",
+          text2: "O novo email não pode ser igual ao antigo.",
+        });
+        return;
+      }
+      if (email !== confirmEmail) {
+        Toast.show({
+          type: "error",
+          text1: "Erro",
+          text2: "Os valores dos campos do email não coincidem.",
         });
         return;
       }
       setLoading(true);
-      await userService.update(data.name, user.email, token);
+      await userService.update(user.name, data.email, token);
       Toast.show({
         type: "success",
-        text1: "Nome atualizado com sucesso!",
+        text1: "Email atualizado com sucesso!",
       });
       navigation.goBack();
     } catch (error) {
+      console.log(error);
       Toast.show({
         type: "error",
         text1: "Ops...",
@@ -114,46 +133,67 @@ export default function ChangeName() {
       </Animatable.View>
 
       <Animatable.View animation={"fadeInUp"} style={styles.containerForm}>
-        <Text style={styles.title}>Nome</Text>
+        <Text style={styles.title}>Email Atual</Text>
         <Controller
           control={control}
-          name="name"
+          name="actualEmail"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              placeholder="Digite seu nome"
+              placeholder="Digite seu email atual"
               style={styles.input}
               onChangeText={(text) => {
                 onChange(text);
-                setName(text);
+                setActualEmail(text);
               }}
               onBlur={onBlur} // chamado quando o é focado
               value={value}
             />
           )}
         />
-        {errors.name && (
-          <Text style={styles.labelError}>{errors.name?.message}</Text>
+        {errors.actualEmail && (
+          <Text style={styles.labelError}>{errors.actualEmail?.message}</Text>
         )}
 
-        <Text style={styles.title}>Nome</Text>
+        <Text style={styles.title}>Email</Text>
         <Controller
           control={control}
-          name="confirmName"
+          name="email"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              placeholder="Confirme seu nome"
+              placeholder="Digite seu novo email"
               style={styles.input}
               onChangeText={(text) => {
                 onChange(text);
-                setConfirmName(text);
+                setEmail(text);
               }}
               onBlur={onBlur} // chamado quando o é focado
               value={value}
             />
           )}
         />
-        {errors.confirmName && (
-          <Text style={styles.labelError}>{errors.confirmName?.message}</Text>
+        {errors.email && (
+          <Text style={styles.labelError}>{errors.email?.message}</Text>
+        )}
+
+        <Text style={styles.title}>Email</Text>
+        <Controller
+          control={control}
+          name="confirmEmail"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              placeholder="Confirme seu novo email"
+              style={styles.input}
+              onChangeText={(text) => {
+                onChange(text);
+                setConfirmEmail(text);
+              }}
+              onBlur={onBlur} // chamado quando o é focado
+              value={value}
+            />
+          )}
+        />
+        {errors.confirmEmail && (
+          <Text style={styles.labelError}>{errors.confirmEmail?.message}</Text>
         )}
 
         {isLoading ? (

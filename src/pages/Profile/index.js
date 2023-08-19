@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import * as Animatable from "react-native-animatable";
+import { useIsFocused } from "@react-navigation/native";
 
 import userService from "../../services/userService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,6 +21,7 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingUserInfo, setIsLoadingUserInfo] = useState(false);
   const [data, setData] = useState([]);
+  const isFocused = useIsFocused();
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -40,8 +42,10 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isFocused) {
+      fetchData();
+    }
+  }, [isFocused]);
 
   return (
     <View style={styles.container}>
@@ -86,12 +90,16 @@ export default function Profile() {
               text1={"Alterar e-mail"}
               text2={"Altere o email do usuário"}
               separator
+              page={"ChangeEmail"}
+              user={data}
             />
             <ButtonDetail
               icon={"lock"}
               text1={"Alterar senha"}
               text2={"Altere a senha do usuário"}
               separator
+              page={"ChangePass"}
+              user={data}
             />
             <ButtonDetail
               icon={"compass"}
