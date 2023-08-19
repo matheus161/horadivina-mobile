@@ -225,7 +225,6 @@ export default function InstitutionsList() {
               onEndReached={loadMoreData}
               onEndReachedThreshold={0.1}
               ListFooterComponent={<FooterList isLoading={isLoading} />}
-              //extraData={favoriteChanged}
             />
           )}
         </SafeAreaView>

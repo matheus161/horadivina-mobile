@@ -1,16 +1,34 @@
 import React from "react";
 import { Text, View, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import styles from "./styles";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
-export default function ItemDetail({ text1, text2, text3, icon, separator }) {
+export default function ButtonDetail({
+  text1,
+  text2,
+  text3,
+  icon,
+  separator,
+  page,
+  user,
+}) {
+  const navigation = useNavigation();
+
+  const navigateToPage = (page, user) => {
+    navigation.navigate(page, { user });
+  };
+
   return (
     <>
-      <View style={styles.itemContainer}>
-        <TouchableOpacity style={styles.iconContainer}>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => navigateToPage(page, user)}
+      >
+        <View style={styles.iconContainer}>
           <Icon name={icon} size={30} />
-        </TouchableOpacity>
+        </View>
 
         <View style={styles.infoAddress}>
           <Text style={styles.title}>{text1}</Text>
@@ -22,7 +40,7 @@ export default function ItemDetail({ text1, text2, text3, icon, separator }) {
             <Text style={styles.detail}>{text2}</Text>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
       {separator && <View style={styles.separator} />}
     </>
   );

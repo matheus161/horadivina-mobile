@@ -32,7 +32,8 @@
     "react-native-toast-message": "^2.1.6",
     "react-native-vector-icons": "^9.2.0",
     "undefined": "logisticinfotech/react-native-animated-alert",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "@react-native-community/slider": "4.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

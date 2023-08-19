@@ -3,7 +3,7 @@ import { Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as Animatable from "react-native-animatable";
-import styles from "./style";
+import styles from "./styles";
 import colors from "../../themes/colors";
 import moment from "moment";
 import "moment/locale/pt-br";
@@ -23,11 +23,7 @@ export default function InstitutionDetail() {
         style={styles.containerHeader}
       >
         <View>
-          <Image
-            //source={require("../../assets/image.jpg")}
-            source={{ uri: item.image }}
-            style={styles.itemAvatar}
-          />
+          <Image source={{ uri: item.image }} style={styles.itemAvatar} />
           <View style={styles.textOverlay}>
             <TouchableOpacity
               onPress={() => {

@@ -15,6 +15,7 @@ export default function Mass({ institution }) {
             ? institution.dailyEvents.domingo
             : "-"
         }
+        separator
       />
       <InfoDetail
         text1={"Segunda"}
@@ -23,24 +24,28 @@ export default function Mass({ institution }) {
             ? institution.dailyEvents.segunda
             : "-"
         }
+        separator
       />
       <InfoDetail
         text1={"Terça"}
         text2={
           institution.dailyEvents.terca ? institution.dailyEvents.terca : "-"
         }
+        separator
       />
       <InfoDetail
         text1={"Quarta"}
         text2={
           institution.dailyEvents.quarta ? institution.dailyEvents.quarta : "-"
         }
+        separator
       />
       <InfoDetail
         text1={"Quinta"}
         text2={
           institution.dailyEvents.quinta ? institution.dailyEvents.quinta : "-"
         }
+        separator
       />
       <InfoDetail
         text1={"Sexta"}
