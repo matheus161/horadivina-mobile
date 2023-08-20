@@ -7,14 +7,12 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
-  TouchableOpacity,
 } from "react-native";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import userService from "../../services/userService";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 import * as Animatable from "react-native-animatable";
-import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./styles";
 import colors from "../../themes/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,7 +20,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import InsitutionsItem from "../../components/InstitutionItem";
 
 export default function InstitutionsList() {
-  const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
@@ -171,6 +168,16 @@ export default function InstitutionsList() {
     );
   }
 
+  // Remove the item and update screen with no api req
+  const updateFavoritesList = (removedItem) => {
+    setData((prevData) => ({
+      ...prevData,
+      paginatedResults: prevData.paginatedResults.filter(
+        (item) => item._id !== removedItem._id
+      ),
+    }));
+  };
+
   return (
     <View style={styles.container}>
       <Animatable.View
@@ -178,14 +185,6 @@ export default function InstitutionsList() {
         delay={500}
         style={styles.containerHeader}
       >
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Icon name="arrow-left" size={25} color={colors.fontPrimary} />
-        </TouchableOpacity>
-
         <Text style={styles.message}>Meus Favoritos</Text>
       </Animatable.View>
 
@@ -219,20 +218,19 @@ export default function InstitutionsList() {
                 <InsitutionsItem
                   item={item}
                   token={token}
-                  onChangeFavorite={() => {
-                    setPage(0);
-                  }}
+                  onRemoveFavorite={(removedItem) =>
+                    updateFavoritesList(removedItem)
+                  }
                   isFavoriteScreen={true}
                 />
               )}
               ItemSeparatorComponent={itemSeparator}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={emptyListMessage}
-              contentContainerStyle={{ paddingBottom: "5%" }}
+              contentContainerStyle={{ paddingBottom: "35%" }}
               onEndReached={loadMoreData}
               onEndReachedThreshold={0.1}
               ListFooterComponent={<FooterList isLoading={isLoading} />}
-              //extraData={favoriteChanged}
             />
           )}
         </SafeAreaView>

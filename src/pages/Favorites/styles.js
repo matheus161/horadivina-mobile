@@ -7,11 +7,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.appPrimary,
   },
   containerHeader: {
-    flexDirection: "row",
-    marginTop: "14%", // Deixar menos para baixo
+    marginTop: "14%",
     marginBottom: "8%",
     marginStart: "5%",
-    alignItems: "center",
   },
   backButton: {
     marginRight: 20,
@@ -20,7 +18,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     color: colors.fontPrimary,
-    marginLeft: 10,
   },
   containerForm: {
     backgroundColor: "#FFF",

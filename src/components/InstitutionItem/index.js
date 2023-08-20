@@ -17,7 +17,7 @@ import styles from "./styles";
 export default function Institution({
   item,
   token,
-  onChangeFavorite,
+  onRemoveFavorite,
   isFavoriteScreen,
 }) {
   const [isFavorite, setIsFavorite] = useState(item.favorite);
@@ -37,7 +37,7 @@ export default function Institution({
       });
       setIsFavorite(false);
       if (isFavoriteScreen) {
-        onChangeFavorite();
+        onRemoveFavorite(item);
       }
     } else {
       await institutionsListService.addFavorite(item._id, token);

@@ -59,7 +59,11 @@ export default function CustomMenu({ institution }) {
 
   return (
     <>
-      <View style={{ flex: 1 }}>
+      <View
+        style={{
+          height: 60,
+        }}
+      >
         <FlatList
           data={menuItems}
           horizontal
@@ -67,6 +71,10 @@ export default function CustomMenu({ institution }) {
           ItemSeparatorComponent={itemSeparator}
           renderItem={handleMenuItem}
           keyExtractor={(item) => item.index.toString()}
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            alignItems: "center",
+          }}
         />
       </View>
       <View style={{ flex: 12 }}>

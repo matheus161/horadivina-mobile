@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import newService from "../../../services/newsService";
-import { Toast } from "react-native-toast-message/lib/src/Toast";
+import Toast from "react-native-toast-message";
 import moment from "moment";
 import "moment/locale/pt-br";
 
@@ -31,7 +31,6 @@ export default function News({ institution }) {
         institution._id,
         page
       );
-
       setData((prevData) => [...prevData, ...news.paginatedResults]);
       setDataTotalItens(news.totalitens);
     } catch (error) {
@@ -107,10 +106,10 @@ export default function News({ institution }) {
   };
 
   return (
-    <View>
-      {isLoading && page == 0 ? (
+    <Animatable.View animation={"fadeIn"} delay={1000}>
+      {isLoading && page === 0 ? (
         <ActivityIndicator
-          size="large"
+          size={20}
           color={colors.appPrimary}
           style={styles.activityIndicator}
         />
@@ -126,6 +125,6 @@ export default function News({ institution }) {
           ListFooterComponent={<FooterList isLoading={isLoading} />}
         />
       )}
-    </View>
+    </Animatable.View>
   );
 }

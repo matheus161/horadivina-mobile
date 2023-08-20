@@ -23,25 +23,42 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingStart: "5%",
     paddingEnd: "5%",
-    justifyContent: "center",
-    alignContent: "center",
-    paddingVertical: 13,
   },
-  scrollView: {
-    padding: "2%",
+  title: {
+    fontSize: 20,
+    marginTop: 28,
+  },
+  input: {
+    borderBottomWidth: 1,
+    height: 40,
+    marginBottom: 12,
+    fontSize: 16,
   },
   button: {
     backgroundColor: colors.appPrimary,
     width: "100%",
     borderRadius: 4,
     paddingVertical: 8,
-    marginTop: 20,
+    marginTop: 14,
+    justifyContent: "center",
     alignItems: "center",
   },
   buttonText: {
     color: colors.fontPrimary,
     fontSize: 18,
     fontWeight: "bold",
+  },
+  buttonRegister: {
+    marginTop: 14,
+    alignSelf: "center",
+  },
+  registerText: {
+    color: colors.fontSecondary,
+  },
+  labelError: {
+    alignSelf: "flex-start",
+    color: colors.error,
+    marginBottom: 8,
   },
 });
 
