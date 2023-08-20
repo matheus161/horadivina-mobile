@@ -6,7 +6,6 @@ const colors = {
   appSecundary: "#423A36",
   appThird: "#8F827B",
   appFourthy: "#363642",
-  statusBar: "#191719",
   grey: "#808080",
   white: "#fff",
   black: "#000",

@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import eventsService from "../../../services/eventsService";
-import { Toast } from "react-native-toast-message/lib/src/Toast";
+import Toast from "react-native-toast-message";
 import moment from "moment";
 import "moment/locale/pt-br";
 
@@ -107,7 +107,7 @@ export default function News({ institution }) {
   };
 
   return (
-    <View>
+    <Animatable.View animation={"fadeIn"} delay={1000}>
       {isLoading && page == 0 ? (
         <ActivityIndicator
           size="large"
@@ -126,6 +126,6 @@ export default function News({ institution }) {
           ListFooterComponent={<FooterList isLoading={isLoading} />}
         />
       )}
-    </View>
+    </Animatable.View>
   );
 }

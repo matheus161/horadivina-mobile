@@ -3,7 +3,6 @@ import colors from "../../../themes/colors";
 
 const styles = StyleSheet.create({
   container: {
-    // marginTop: "10%",
     padding: "2%",
     width: "100%",
     height: 275,
@@ -33,7 +32,6 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     textAlign: "center",
-    // fontWeight: "bold",
   },
   date: {
     backgroundColor: "white",
@@ -48,7 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#CCC",
   },
   bottomContainer: {
-    position: "absolute", // Position the title and date at the bottom
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
@@ -56,7 +54,7 @@ const styles = StyleSheet.create({
   },
   activityIndicator: {
     flex: 1,
-    marginTop: "50¨%",
+    marginTop: "50%",
   },
   noResultMesage: {
     color: colors.appPrimary,

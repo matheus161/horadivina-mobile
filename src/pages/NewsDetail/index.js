@@ -18,7 +18,7 @@ export default function InstitutionDetail() {
   return (
     <View style={styles.container}>
       <Animatable.View
-        animation={"fadeInLeft"}
+        animation={"fadeIn"}
         delay={500}
         style={styles.containerHeader}
       >
