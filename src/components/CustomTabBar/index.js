@@ -1,15 +1,9 @@
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Platform,
-  Keyboard,
-} from "react-native";
+import { View, TouchableOpacity, Platform, Keyboard } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import colors from "../../themes/colors";
 
-import * as Animatable from "react-native-animatable";
+import styles from "./styles";
 
 export default function CustomTabBar({ state, descriptors, navigation }) {
   const [keyboardShow, setKeyboardShow] = React.useState();
@@ -35,11 +29,7 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
   return (
     !keyboardShow && (
       <View style={styles.container}>
-        <Animatable.View
-          style={styles.content}
-          animation={"fadeInUp"}
-          delay={500}
-        >
+        <View style={styles.content}>
           {state.routes.map((route, index) => {
             const { options } = descriptors[route.key];
 
@@ -74,7 +64,6 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
                 testID={options.tabBarTestID}
                 onPress={onPress}
                 onLongPress={onLongPress}
-                style={styles.buttomTab}
               >
                 <View style={{ alignItems: "center", padding: 4 }}>
                   <View
@@ -82,7 +71,7 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
                       styles.innerButtom,
                       {
                         backgroundColor: isFocused
-                          ? colors.appThird
+                          ? colors.fontPrimary
                           : "transparent",
                       },
                     ]}
@@ -97,42 +86,8 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
               </TouchableOpacity>
             );
           })}
-        </Animatable.View>
+        </View>
       </View>
     )
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  content: {
-    borderRadius: 99,
-    flexDirection: "row",
-    marginBottom: Platform.OS === "ios" ? 38 : 42,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    bottom: 0,
-    backgroundColor: colors.appPrimary,
-    gap: 10,
-    elevation: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 3.8,
-  },
-  buttonTab: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  innerButtom: {
-    padding: 8,
-    borderRadius: 99,
-  },
-});

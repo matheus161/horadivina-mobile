@@ -1,7 +1,6 @@
 import React from "react";
 import { Text, View, ScrollView } from "react-native";
 
-import * as Animatable from "react-native-animatable";
 import styles from "./styles";
 import InfoDetail from "../InfoDetail";
 

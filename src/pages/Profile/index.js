@@ -92,7 +92,6 @@ export default function Profile() {
       [
         {
           text: "Sim",
-          //TODO: CHAMAR ROTA DE EXCLUIR
           onPress: handleDeleteAccount,
         },
         {
@@ -156,6 +155,7 @@ export default function Profile() {
             style={styles.scrollView}
             showsVerticalScrollIndicator={false}
             alwaysBounceVertical={false}
+            contentContainerStyle={{ paddingBottom: 120 }}
           >
             <ButtonDetail
               icon={"user-alt"}
