@@ -99,6 +99,7 @@ export default function Register() {
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               placeholder="Digite seu email"
+              autoCapitalize="none"
               style={styles.input}
               onChangeText={onChange}
               onBlur={onBlur} // chamado quando o é focado
@@ -119,6 +120,7 @@ export default function Register() {
             <TextInput
               style={styles.input}
               placeholder="Digite sua senha"
+              autoCapitalize="none"
               onChangeText={onChange}
               onBlur={onBlur} // chamado quando o é focado
               value={value}

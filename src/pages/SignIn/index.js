@@ -79,10 +79,10 @@ export default function SignIn() {
             <TextInput
               placeholder="Digite um email"
               style={styles.input}
+              autoCapitalize="none"
               onChangeText={onChange}
               onBlur={onBlur} // chamado quando o é focado
               value={value}
-              autoCapitalize="none"
             />
           )}
         />
@@ -99,6 +99,7 @@ export default function SignIn() {
             <TextInput
               style={styles.input}
               placeholder="Sua senha"
+              autoCapitalize="none"
               onChangeText={onChange}
               onBlur={onBlur} // chamado quando o é focado
               value={value}

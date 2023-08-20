@@ -9,7 +9,11 @@ export default function App() {
   return (
     <>
       <NavigationContainer>
-        <StatusBar translucent={true} backgroundColor="transparent" />
+        <StatusBar
+          translucent={true}
+          barStyle="#3d423c"
+          backgroundColor="#3d423c"
+        />
         <Routes />
       </NavigationContainer>
       <Toast />
