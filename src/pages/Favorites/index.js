@@ -168,6 +168,16 @@ export default function InstitutionsList() {
     );
   }
 
+  // Remove the item and update screen with no api req
+  const updateFavoritesList = (removedItem) => {
+    setData((prevData) => ({
+      ...prevData,
+      paginatedResults: prevData.paginatedResults.filter(
+        (item) => item._id !== removedItem._id
+      ),
+    }));
+  };
+
   return (
     <View style={styles.container}>
       <Animatable.View
@@ -208,16 +218,16 @@ export default function InstitutionsList() {
                 <InsitutionsItem
                   item={item}
                   token={token}
-                  onChangeFavorite={() => {
-                    setPage(0);
-                  }}
+                  onRemoveFavorite={(removedItem) =>
+                    updateFavoritesList(removedItem)
+                  }
                   isFavoriteScreen={true}
                 />
               )}
               ItemSeparatorComponent={itemSeparator}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={emptyListMessage}
-              contentContainerStyle={{ paddingBottom: "5%" }}
+              contentContainerStyle={{ paddingBottom: "35%" }}
               onEndReached={loadMoreData}
               onEndReachedThreshold={0.1}
               ListFooterComponent={<FooterList isLoading={isLoading} />}
