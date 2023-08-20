@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, ImageBackground } from "react-native";
 
 import styles from "./styles";
 import * as Animatable from "react-native-animatable";
@@ -14,7 +14,7 @@ export default function Welcome() {
       <View style={styles.containerLogo}>
         <Animatable.Image
           animation={"flipInY"}
-          source={require("../../assets/logo_preto.png")}
+          source={require("../../assets/Logo_Hora_Divina.png")}
           style={{ width: "100%" }}
           resizeMode="contain"
         />
