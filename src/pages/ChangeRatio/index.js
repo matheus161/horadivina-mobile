@@ -97,7 +97,6 @@ export default function ChangeRatio() {
           // thumbTintColor={colors.appPrimary}
           onValueChange={(value) => setRatio(value.toFixed(0))}
           value={ratio}
-          tapToSeek
         />
         <View style={styles.separator} />
         <View style={{ margin: 10 }}>
