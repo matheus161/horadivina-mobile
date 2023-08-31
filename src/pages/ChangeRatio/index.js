@@ -94,7 +94,7 @@ export default function ChangeRatio() {
           maximumValue={100}
           minimumTrackTintColor={colors.appPrimary}
           maximumTrackTintColor="#A9A9A9"
-          thumbTintColor={colors.appPrimary}
+          // thumbTintColor={colors.appPrimary}
           onValueChange={(value) => setRatio(value.toFixed(0))}
           value={ratio}
           tapToSeek
