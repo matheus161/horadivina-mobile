@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  ActivityIndicator,
-} from "react-native";
+import { Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -15,10 +9,9 @@ import * as Animatable from "react-native-animatable";
 
 import userService from "../../services/userService";
 
-import Slider from "@react-native-community/slider";
-
 import styles from "./styles";
 import colors from "../../themes/colors";
+import { Slider } from "react-native-range-slider-expo";
 
 export default function ChangeRatio() {
   const [isLoading, setLoading] = useState(false);
@@ -88,18 +81,19 @@ export default function ChangeRatio() {
           <Text style={styles.ratioText}>Distância Máxima</Text>
           <Text style={styles.ratioText}>{ratio} km</Text>
         </View>
-        <Slider
-          style={styles.slider}
-          minimumValue={1}
-          maximumValue={100}
-          minimumTrackTintColor={colors.appPrimary}
-          maximumTrackTintColor="#A9A9A9"
-          // thumbTintColor={colors.appPrimary}
-          onValueChange={(value) => setRatio(value.toFixed(0))}
-          value={ratio}
-        />
-        <View style={styles.separator} />
-        <View style={{ margin: 10 }}>
+
+        <View style={styles.lineContainer}>
+          <Slider
+            min={1}
+            max={100}
+            step={1}
+            valueOnChange={(value) => setRatio(value.toFixed(0))}
+            initialValue={ratio}
+            knobColor={colors.appPrimary}
+            valueLabelsBackgroundColor={colors.appPrimary}
+            inRangeBarColor={colors.appThird}
+            outOfRangeBarColor={colors.appPrimary}
+          />
           {isLoading ? (
             <ActivityIndicator />
           ) : (

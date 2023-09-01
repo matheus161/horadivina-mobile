@@ -26,6 +26,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingStart: "5%",
     paddingEnd: "5%",
+    paddingTop: "5%",
+  },
+  lineContainer: {
+    justifyContent: "center",
+    height: 200,
   },
   title: {
     fontSize: 20,
