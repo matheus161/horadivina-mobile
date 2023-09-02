@@ -78,6 +78,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  containerInputTexto: {
+    flexDirection: "row",
+    width: "100%",
+    // alignItems: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    minWidth: 40,
+    textAlign: "center",
+    flex: 1,
+    marginLeft: "2%",
+    marginRight: "2%",
+    borderColor: "white",
+    color: "black",
+  },
+  botao: {
+    fontSize: 24,
+    paddingHorizontal: 10,
+  },
 });
 
 export default styles;

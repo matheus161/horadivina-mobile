@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  TextInput,
+  Platform,
+} from "react-native";
+
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -11,7 +19,8 @@ import userService from "../../services/userService";
 
 import styles from "./styles";
 import colors from "../../themes/colors";
-import { Slider } from "react-native-range-slider-expo";
+
+import Slider from "@react-native-community/slider";
 
 export default function ChangeRatio() {
   const [isLoading, setLoading] = useState(false);
@@ -59,6 +68,18 @@ export default function ChangeRatio() {
     getUser();
   }, []);
 
+  const incrementar = () => {
+    if (ratio < 100) {
+      setRatio(ratio + 5);
+    }
+  };
+
+  const decrementar = () => {
+    if (ratio > 5) {
+      setRatio(ratio - 5);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Animatable.View
@@ -82,18 +103,38 @@ export default function ChangeRatio() {
           <Text style={styles.ratioText}>{ratio} km</Text>
         </View>
 
-        <View style={styles.lineContainer}>
+        {Platform.OS === "ios" ? (
           <Slider
-            min={1}
-            max={100}
-            step={1}
-            valueOnChange={(value) => setRatio(value.toFixed(0))}
-            initialValue={ratio}
-            knobColor={colors.appPrimary}
-            valueLabelsBackgroundColor={colors.appPrimary}
-            inRangeBarColor={colors.appThird}
-            outOfRangeBarColor={colors.appPrimary}
+            style={styles.slider}
+            minimumValue={1}
+            maximumValue={100}
+            minimumTrackTintColor={colors.appPrimary}
+            maximumTrackTintColor="#A9A9A9"
+            // thumbTintColor={colors.appPrimary}
+            onValueChange={(value) => setRatio(value.toFixed(0))}
+            value={ratio}
+            tapToSeek
           />
+        ) : (
+          <View style={styles.containerInputTexto}>
+            <TouchableOpacity onPress={decrementar}>
+              <Icon name="minus" size={25} color={colors.appPrimary} />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              value={ratio.toString()}
+              defaultValue={ratio.toString()}
+              keyboardType="numeric"
+              editable={false}
+              // onChangeText={(value) => setRatio(value.toFixed(0))}
+            />
+            <TouchableOpacity onPress={incrementar}>
+              <Icon name="plus" size={25} color={colors.appPrimary} />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <View style={styles.lineContainer}>
           {isLoading ? (
             <ActivityIndicator />
           ) : (
