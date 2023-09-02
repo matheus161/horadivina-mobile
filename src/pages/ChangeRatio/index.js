@@ -126,7 +126,7 @@ export default function ChangeRatio() {
               defaultValue={ratio.toString()}
               keyboardType="numeric"
               editable={false}
-              // onChangeText={(value) => setRatio(value.toFixed(0))}
+              // onChangeText={(value ) => setRatio(value.toFixed(0))}
             />
             <TouchableOpacity onPress={incrementar}>
               <Icon name="plus" size={25} color={colors.appPrimary} />
